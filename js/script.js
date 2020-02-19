@@ -61,12 +61,12 @@ $(document).ready(function() {
                 Authorization: 'Token token="c7feecf386bc6d6ca78ebf0002238dc8"'
             }
         }).then(function(response) {
-            console.log(response);
+            // pick a random quote from the returned results
             var randomQuote =
                 response.quotes[
                     Math.floor(Math.random() * response.quotes.length)
                 ];
-            console.log(randomQuote);
+            // push the random quote onto the DOM
             var qBody = $("<p>");
             qBody.addClass("title").text(randomQuote.body);
             $(".card-content").append(qBody);
