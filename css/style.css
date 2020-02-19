@@ -1,4 +1,20 @@
 /* stylesheet for Match My Mood */
+html,
+body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+}
+
+html {
+    background-image: linear-gradient(115deg, #0a4a82b3, #8fe9ff);
+    background-repeat: no-repeat;
+}
+body {
+    margin: 0% 10%;
+}
 .modal-background {
     background-image: url(../assets/images/modal-bg.jpg);
     background-position: center;
@@ -15,8 +31,22 @@
     height: 60%;
     padding: 4% 7%;
 }
-.quote-card {
-    width: 30%;
-    height: auto;
+h1 {
+    font-size: 35px;
+    color: white;
     text-align: center;
+}
+.time-spot {
+    padding-top: 15px;
+    margin-bottom: 7%;
+}
+.card {
+    height: 300px;
+    padding: 0% 7%;
+}
+.quote-card {
+    text-align: center;
+}
+.title {
+    font-size: x-large;
 }

@@ -1,6 +1,11 @@
-$(document).ready(function () {
+$(document).ready(function() {
+    //--------------------------------------------------------------------------
+    // WEATHER AND TIME FUNCTIONS
+    //---------------------------------------------------------------------------
+    var currDate = "";
+    var currTime = "";
 
-    // Capture selector for HTML area to hold current weather data  
+    // Capture selector for HTML area to hold current weather data
     var $displayArea = $("#display-area");
 
     // This is my (JimG) API key.
@@ -21,28 +26,35 @@ $(document).ready(function () {
         var my_geolocation = [];
         // get current geolocation (latitude & longitude)
         navigator.geolocation.getCurrentPosition(success, error);
-
     } else {
         var my_geolocation = JSON.parse(data);
-        var latitude  = my_geolocation[0];
+        var latitude = my_geolocation[0];
         var longitude = my_geolocation[1];
-        console.log("Your saved geolocation is: latitude ", latitude, "longitude ", longitude);
+        console.log(
+            "Your saved geolocation is: latitude ",
+            latitude,
+            "longitude ",
+            longitude
+        );
         getCurrentWeather(latitude, longitude);
     }
-
 
     //---------------------------------------------------------------------
     // functions to handle success or failure of getCurrentPosition method
     //---------------------------------------------------------------------
 
     function success(pos) {
-
         console.log(pos.coords);
 
         var latitude = pos.coords.latitude;
         var longitude = pos.coords.longitude;
 
-        console.log("Your geolocation is: latitude ", latitude, "longitude ", longitude);
+        console.log(
+            "Your geolocation is: latitude ",
+            latitude,
+            "longitude ",
+            longitude
+        );
 
         // save latitude and longitude in geolocation array
         my_geolocation.push(latitude);
@@ -59,56 +71,53 @@ $(document).ready(function () {
         console.warn(`ERROR(${err.code}): ${err.message}`);
     }
 
-
     //---------------------------------------------------------------------
-    // function to get current weather for specific latitude & longitude 
+    // function to get current weather for specific latitude & longitude
     //---------------------------------------------------------------------
 
     function getCurrentWeather(lat, lon) {
-
         // set up the AJAX query URL
 
         var queryURL =
             "https://api.openweathermap.org/data/2.5/weather?appid=" +
             APIKey +
-            "&units=imperial&lat=" + lat + "&lon=" + lon;
+            "&units=imperial&lat=" +
+            lat +
+            "&lon=" +
+            lon;
 
         // AJAX call
 
         $.ajax({
             url: queryURL,
             method: "GET"
-        }).then(function (response) {
+        }).then(function(response) {
             console.log(response);
 
             var weatherIcon = $("<img>");
 
             weatherIcon.attr(
                 "src",
-                "http://openweathermap.org/img/w/" + response.weather[0].icon + ".png"
+                "http://openweathermap.org/img/w/" +
+                    response.weather[0].icon +
+                    ".png"
             );
 
-            //var date = moment().format("l");
-            //var datetime = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
             var myDate = moment().format("dddd, MMM Do");
             var myTime = moment().format("h:mm a");
-            //var banner   = $("<p>");
-            var currDate = $("<p>").text(myDate);
-            var currTime = $("<p>").text(myTime);
-            //currTime.attr("text-align", "center");
-            //currDateTime.attr("fontsize", "2em");
+            currDate = $("<h1>").text(myDate);
+            currTime = $("<h1>").text(myTime);
 
-            //banner.append(currDate);
-            //banner.append(currTime);
             currDate.append(weatherIcon);
-
-            //$displayArea.append(banner);
-            $displayArea.append(currDate);
-            $displayArea.append(currTime);
-        })
-
+        });
     }
-
+    function appendTime() {
+        $displayArea.append(currDate);
+        $displayArea.append(currTime);
+    }
+    //--------------------------------------------------------------------------
+    // QUOTE FUNCTIONS
+    //---------------------------------------------------------------------------
 
     // quote section variables
     var finalMood = "";
@@ -119,6 +128,7 @@ $(document).ready(function () {
         $(".modal").removeClass("is-active");
         getMood();
         getQuote();
+        appendTime();
     });
 
     // remove the modal on click of X
@@ -146,19 +156,19 @@ $(document).ready(function () {
                 quoteKey = "happiness";
                 break;
             case "Sad":
-                quoteKey = "sad";
+                quoteKey = "alone";
                 break;
             case "Calm":
-                quoteKey = "peace";
+                quoteKey = "nature";
                 break;
             case "Hyper":
-                quoteKey = "imagination";
+                quoteKey = "best";
                 break;
             case "Tired":
-                quoteKey = "simplicity";
+                quoteKey = "good";
                 break;
             case "Energetic":
-                quoteKey = "funny";
+                quoteKey = "life";
         }
 
         // quote AJAX call
@@ -173,18 +183,19 @@ $(document).ready(function () {
             }
         }).then(function(response) {
             // pick a random quote from the returned results
-            var randomQuote =
-                response.quotes[
-                    Math.floor(Math.random() * response.quotes.length)
-                ];
+            var quotes = response.quotes.filter(
+                quote => quote.body.length < 150
+            );
+            var randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
             // push the random quote onto the DOM
             var qBody = $("<p>");
             qBody.addClass("title").text(randomQuote.body);
-            $(".card-content").append(qBody);
+            $(".quote-content").append(qBody);
 
             var qAuthor = $("<p>");
             qAuthor.addClass("subtitle").text(randomQuote.author);
-            $(".card-content").append(qAuthor);
+            $(".quote-content").append(qAuthor);
         });
     }
 });
