@@ -11,7 +11,17 @@
 </head>
 
 <body>
+    <!-- divs to be filled by dynamically generated elements with JavaScript -->
 
+    <!-- quote div -->
+    <div class="quote-spot">
+        <div class="card quote-card">
+            <div class="card-content">
+            </div>
+        </div>
+    </div>
+
+    <!-- modal that launches on startup -->
     <div class="modal is-active">
         <div class="modal-background"></div>
         <div class="modal-content">
@@ -50,15 +60,6 @@
         </div>
         <button class="modal-close is-large" aria-label="close"></button>
     </div>
-
-
-    <span style="z-index:50;font-size:0.9em;">
-        <img src="http://api.paperquotes.com/static/images/paperquotes.png" height="20" width="20"
-            alt="paperquotes.com" />
-        <a href="http://paperquotes.com" title="Powered by quotes from paperquotes.com"
-            style="color: #9fcc25; margin-left: 4px; vertical-align: middle;">paperquotes.com
-        </a>
-    </span>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>

@@ -8,3 +8,8 @@
     height: 60%;
     padding: 7%;
 }
+.quote-card {
+    width: 30%;
+    height: auto;
+    text-align: center;
+}
