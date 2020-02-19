@@ -1,1 +1,10 @@
 /* stylesheet for Match My Mood */
+.modal-background {
+    background-color: tomato;
+}
+.modal-content {
+    background-color: yellow;
+    width: 60%;
+    height: 60%;
+    padding: 7%;
+}
