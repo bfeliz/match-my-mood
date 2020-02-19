@@ -5,33 +5,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Match My Mood</title>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <link rel="stylesheet" href="css/style.css" />
 
 </head>
 
 <body>
-    <h1>Napster Api</h1>
-   
-   
-    <button data-mood=happy>happy</button>
-    <button data-mood="sad">sad</button>
-    <button data-mood="calm">calm</button> 
- 
-    <div id="song appears here"></div>
-    
+    <!-- divs to be filled by dynamically generated elements with JavaScript -->
 
+    <!-- quote div -->
+    <div class="quote-spot">
+        <div class="card quote-card">
+            <div class="card-content">
+            </div>
+        </div>
+    </div>
 
+    <!-- modal that launches on startup -->
+    <div class="modal is-active">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <div class="control">
+                <label class="label is-size-1 has-text-white">What's your mood?</label>
+                <div class="select is-info">
+                    <select>
+                        <option>I don't know, pick for me!</option>
+                        <option>Happy</option>
+                        <option>Sad</option>
+                        <option>Calm</option>
+                        <option>Hyper</option>
+                        <option>Tired</option>
+                        <option>Energetic</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="field">
+                <div class="control">
+                    <label class="radio has-text-white is-size-5">
+                        <input type="radio" name="question" checked>
+                        Match my mood!
+                    </label>
+                    <label class="radio has-text-white is-size-5">
+                        <input type="radio" name="question">
+                        Do the opposite of my mood
+                    </label>
+                </div>
+            </div>
+            <br>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-link launch-btn is-primary is-inverted is-outlined">Launch my page</button>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+    </div>
 
+    <div class="container" id="display-area">
 
-    <audio controls>
-        <source src="" type="audio/mpeg">
-       Your browser does not support the audio tag.
-     </audio>
+    </div>
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="js/script.js"></script>
-<script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="js/script.js"></script>
 </body>
 
 
