@@ -413,23 +413,52 @@ $(document).ready(function() {
             method: "GET"
         }).then(function(response) {
             player.tracks = response.tracks;
+            console.log(response.tracks)
             player.init();
             player.play();
         });
+
     }
 
-    let player = {
+    
+
+      
+ let player = {
         tracks: [],
-        currentIndex: 0,
-        init() {
-            $("#song-content").append('<audio id="player" controls></audio>');
-        },
+        currentIndex: Math.floor(Math.random() * 10),
+        
         play() {
+            let songTitle = this.tracks[this.currentIndex].name;
+            let artist = this.tracks[this.currentIndex].artistName;
+            console.log(songTitle)
+            console.log(artist)
+            var songT = $("<p>");
+            songT.text(songTitle);
+            $("#song-content").append(songT);
+
+            var songA = $("<p>");
+            songA.text(artist);
+            $("#song-content").append(songA);
+            
             $("#player").append(
                 `<source src = "${this.tracks[this.currentIndex].previewURL}">`
-            );
+                
+                
+            )
 
             document.querySelector("#player").play();
+            
+        },
+       
+       
+       
+       
+       
+        init() {
+            $("#song-content").append('<audio id="player" controls></audio>');
         }
+    
+        
+        
     };
 });
