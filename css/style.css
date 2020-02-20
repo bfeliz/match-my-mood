@@ -1,7 +1,6 @@
 /* stylesheet for Match My Mood */
 html,
 body {
-    height: 100vh;
     margin: 0;
     padding: 0;
     border: 0;
@@ -9,8 +8,9 @@ body {
 }
 
 html {
-    background-image: linear-gradient(115deg, #0a4a82b3, #8fe9ff);
-    background-repeat: no-repeat;
+    /* background-repeat: no-repeat; */
+    background-size: cover;
+    min-height: 100%;
 }
 body {
     margin: 0% 10%;
@@ -49,4 +49,7 @@ h1 {
 }
 .title {
     font-size: x-large;
+}
+.other-card {
+    margin-bottom: 15%;
 }
