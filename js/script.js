@@ -10,11 +10,12 @@ $(document).ready(function() {
         event.preventDefault();
         $(".modal").removeClass("is-active");
         $(".card").removeClass("is-hidden");
+        appendTime();
         getMood();
         setColor();
         getQuote();
         getPhotos();
-        appendTime();
+        loadPlaylist();
     });
 
     // get the mood from user input
@@ -95,12 +96,6 @@ $(document).ready(function() {
         var my_geolocation = JSON.parse(data);
         var latitude = my_geolocation[0];
         var longitude = my_geolocation[1];
-        console.log(
-            "Your saved geolocation is: latitude ",
-            latitude,
-            "longitude ",
-            longitude
-        );
         getCurrentWeather(latitude, longitude);
     }
 
@@ -109,17 +104,8 @@ $(document).ready(function() {
     //---------------------------------------------------------------------
 
     function success(pos) {
-        console.log(pos.coords);
-
         var latitude = pos.coords.latitude;
         var longitude = pos.coords.longitude;
-
-        console.log(
-            "Your geolocation is: latitude ",
-            latitude,
-            "longitude ",
-            longitude
-        );
 
         // save latitude and longitude in geolocation array
         my_geolocation.push(latitude);
@@ -305,8 +291,6 @@ $(document).ready(function() {
             photosPerPage +
             "&page=1";
 
-        console.log("photo URL:", queryURL);
-
         // AJAX call
 
         $.ajax({
@@ -317,8 +301,6 @@ $(document).ready(function() {
                     "563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484"
             }
         }).then(function(response) {
-            console.log(response);
-
             for (let i = 0; i < 40; i++) {
                 //console.log(response.photos[i].id,
                 //    response.photos[i].photographer);
@@ -327,7 +309,7 @@ $(document).ready(function() {
                     // in array of photo information
                     var newPhoto = new Photo(
                         response.photos[i].photographer,
-                        response.photos[i].src.small
+                        response.photos[i].src.medium
                     );
                     photoInfo.push(newPhoto);
                 }
@@ -348,7 +330,6 @@ $(document).ready(function() {
             currentPhoto++;
             if (currentPhoto < photoInfo.length) {
                 var foto = photoInfo[currentPhoto];
-                console.log(foto.photographer);
                 // clear out the area holding the current photo so the next one will replace it
                 $displayPhoto.empty();
                 var photoSpot = $("<img>");
@@ -363,7 +344,6 @@ $(document).ready(function() {
         // function to set countdown timer
         //-----------------------------------------------------------
         function setTimer() {
-            console.log("start countdown");
             timerInterval = setInterval(displayNextPhoto, timerTime);
         }
 
@@ -418,18 +398,14 @@ $(document).ready(function() {
         sad: "pp.162612012"
     };
 
-    function loadPlaylist(mood) {
-        console.info(typeof mood);
-        if (typeof playlists[mood.toLowerCase()] !== "undefined") {
-            let finalPlaylist = playlists[mood.toLowerCase()];
-            singlePlaylist(finalPlaylist);
-        } else {
-            console.log("error; no such playlist");
-        }
+    function loadPlaylist() {
+        var moodLowercase = finalMood.toLocaleLowerCase();
+        let finalPlaylist = playlists[moodLowercase];
+        singlePlaylist(finalPlaylist);
     }
 
-    function singlePlaylist(playlistId) {
-        var queryURL = `http://api.napster.com/v2.2/playlists/${playlistId}/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`;
+    function singlePlaylist(moodLowercase) {
+        var queryURL = `http://api.napster.com/v2.2/playlists/${moodLowercase}/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`;
 
         $.ajax({
             url: queryURL,
@@ -446,7 +422,7 @@ $(document).ready(function() {
         tracks: [],
         currentIndex: 0,
         init() {
-            $("#display-area").append('<audio id="player" controls></audio>');
+            $("#song-content").append('<audio id="player" controls></audio>');
         },
         play() {
             $("#player").append(
