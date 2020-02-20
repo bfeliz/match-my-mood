@@ -31,11 +31,11 @@ APIKey = "ZTM0M2ZjNDAtY2Y1Ny00MjQ1LWIxYmEtMzAwY2FlNDU2ZGNj";
 
 var playlists = {
   energetic: "pp.243995364",
-  sleepy: "pp.201748658",
+  tired: "pp.201748658",
   happy: "pp.181321249",
   calm: "pp.191473986",
   hyper: "pp.283875163",
-  sad: "pp.162612012"
+  sad: "pp.162612012",
 };
 
 function loadPlaylist(mood){
@@ -77,9 +77,6 @@ let player = {
       document.querySelector('#player').play();
   }
 };
-
-
-
 
 
 // $("audio").attr( "src", "https://listen.hs.llnwd.net/g3/2/6/2/5/2/1329325262.mp3"
