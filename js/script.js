@@ -70,115 +70,116 @@ $(document).ready(function() {
     var currDate = "";
     var currTime = "";
 
-    // Capture selector for HTML area to hold current weather data  
+    // Capture selector for HTML area to hold current weather data
     var $displayWeather = $("#display-weather");
-    
-    // Capture selector for HTML area to hold photos  
+
+    // Capture selector for HTML area to hold photos
     var $displayPhoto = $("#display-photo");
 
     // This is my (JimG) weather API key.
     var APIKey = "7514abfe02ab6db7877685958ec119d7";
 
-  //---------------------------------------------------------------------------
-  // get geolocation (latitude & longitude) from local storage if it exists,
-  // otherwise get geographic location using navigator function.
-  //---------------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    // get geolocation (latitude & longitude) from local storage if it exists,
+    // otherwise get geographic location using navigator function.
+    //---------------------------------------------------------------------------
 
-  var data = localStorage.getItem("MyGeoLocation");
+    var data = localStorage.getItem("MyGeoLocation");
 
-  if (!data) {
-    // create empty array to hold geolocation
-    var my_geolocation = [];
-    // get current geolocation (latitude & longitude)
-    navigator.geolocation.getCurrentPosition(success, error);
-  } else {
-    var my_geolocation = JSON.parse(data);
-    var latitude = my_geolocation[0];
-    var longitude = my_geolocation[1];
-    console.log(
-      "Your saved geolocation is: latitude ",
-      latitude,
-      "longitude ",
-      longitude
-    );
-    getCurrentWeather(latitude, longitude);
-  }
-
-  //---------------------------------------------------------------------
-  // functions to handle success or failure of getCurrentPosition method
-  //---------------------------------------------------------------------
-
-  function success(pos) {
-    console.log(pos.coords);
-
-    var latitude = pos.coords.latitude;
-    var longitude = pos.coords.longitude;
-
-    console.log(
-      "Your geolocation is: latitude ",
-      latitude,
-      "longitude ",
-      longitude
-    );
-
-    // save latitude and longitude in geolocation array
-    my_geolocation.push(latitude);
-    my_geolocation.push(longitude);
-
-    // save geolocation array in local storage
-    localStorage.setItem("MyGeoLocation", JSON.stringify(my_geolocation));
-
-    // get current weather conditions at current geolocation
-    getCurrentWeather(latitude, longitude);
-
-    function error(err) {
-      console.warn(`ERROR(${err.code}): ${err.message}`);
+    if (!data) {
+        // create empty array to hold geolocation
+        var my_geolocation = [];
+        // get current geolocation (latitude & longitude)
+        navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+        var my_geolocation = JSON.parse(data);
+        var latitude = my_geolocation[0];
+        var longitude = my_geolocation[1];
+        console.log(
+            "Your saved geolocation is: latitude ",
+            latitude,
+            "longitude ",
+            longitude
+        );
+        getCurrentWeather(latitude, longitude);
     }
-  }
 
-  //---------------------------------------------------------------------
-  // function to get current weather for specific latitude & longitude
-  //---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    // functions to handle success or failure of getCurrentPosition method
+    //---------------------------------------------------------------------
 
-  function getCurrentWeather(lat, lon) {
-    // set up the AJAX query URL
+    function success(pos) {
+        console.log(pos.coords);
 
-    var queryURL =
-      "https://api.openweathermap.org/data/2.5/weather?appid=" +
-      APIKey +
-      "&units=imperial&lat=" +
-      lat +
-      "&lon=" +
-      lon;
+        var latitude = pos.coords.latitude;
+        var longitude = pos.coords.longitude;
 
-    // AJAX call
+        console.log(
+            "Your geolocation is: latitude ",
+            latitude,
+            "longitude ",
+            longitude
+        );
 
-    $.ajax({
-      url: queryURL,
-      method: "GET"
-    }).then(function(response) {
-      console.log(response);
+        // save latitude and longitude in geolocation array
+        my_geolocation.push(latitude);
+        my_geolocation.push(longitude);
 
-      var weatherIcon = $("<img>");
+        // save geolocation array in local storage
+        localStorage.setItem("MyGeoLocation", JSON.stringify(my_geolocation));
 
-      weatherIcon.attr(
-        "src",
-        "http://openweathermap.org/img/w/" + response.weather[0].icon + ".png"
-      );
+        // get current weather conditions at current geolocation
+        getCurrentWeather(latitude, longitude);
 
-      var myDate = moment().format("dddd, MMM Do");
-      var myTime = moment().format("h:mm a");
-      currDate = $("<h1>").text(myDate);
-      currTime = $("<h1>").text(myTime);
+        function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+        }
+    }
 
-      currDate.append(weatherIcon);
+    //---------------------------------------------------------------------
+    // function to get current weather for specific latitude & longitude
+    //---------------------------------------------------------------------
 
-    });
-  }
+    function getCurrentWeather(lat, lon) {
+        // set up the AJAX query URL
 
-       function appendTime() {
-       $displayWeather.append(currDate);
-       $displayWeather.append(currTime);
+        var queryURL =
+            "https://api.openweathermap.org/data/2.5/weather?appid=" +
+            APIKey +
+            "&units=imperial&lat=" +
+            lat +
+            "&lon=" +
+            lon;
+
+        // AJAX call
+
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function(response) {
+            console.log(response);
+
+            var weatherIcon = $("<img>");
+
+            weatherIcon.attr(
+                "src",
+                "http://openweathermap.org/img/w/" +
+                    response.weather[0].icon +
+                    ".png"
+            );
+
+            var myDate = moment().format("dddd, MMM Do");
+            var myTime = moment().format("h:mm a");
+            currDate = $("<h1>").text(myDate);
+            currTime = $("<h1>").text(myTime);
+
+            currDate.append(weatherIcon);
+        });
+    }
+
+    function appendTime() {
+        $displayWeather.append(currDate);
+        $displayWeather.append(currTime);
     }
 
     //--------------------------------------------------------------------------
@@ -239,18 +240,21 @@ $(document).ready(function() {
         });
     }
 
-    function getPhotos () {
-    
+    //--------------------------------------------------------------------------
+    // PHOTO FUNCTIONS
+    //---------------------------------------------------------------------------
+
+    function getPhotos() {
         //debugger;
 
-        var currentPhoto    = -1;
-        var photoType       = "";
-        var photoInfo       = [];       // You may request upto 80 photos per page
-        var photosPerPage   = 80;
-        var timerTime       = 10000;    // 10 second delay between photos
+        var currentPhoto = -1;
+        var photoType = "";
+        var photoInfo = []; // You may request upto 80 photos per page
+        var photosPerPage = 80;
+        var timerTime = 10000; // 10 second delay between photos
 
         // API key for Pexels:
-        // 563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484  
+        // 563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484
 
         // set photo search parameter based on mood.
 
@@ -273,14 +277,14 @@ $(document).ready(function() {
             case "Energetic":
                 photoType = "sky";
         }
-        
+
         // TESTING: override photoType
         //var photoType = "universe";
         // Some of the choices are:
         //  sunset, sky, mountains, sea, sad, night, light, desert, universe,
         //  forest, fire, beach, tree, trees, rain, earth, flowers, flower, clouds, smile
 
-    /*  ---------------------------------------------------------------------------------------------------------------
+        /*  ---------------------------------------------------------------------------------------------------------------
             Whenever you are doing an API request make sure to show a prominent link to Pexels.
             You can use a text link (e.g. "Photos provided by Pexels") or a link with our logo (Download our logo in white or black).
             Always credit our photographers when possible (e.g. "Photo by John Doe on Pexels" with a link to the photo page on Pexels).
@@ -295,11 +299,11 @@ $(document).ready(function() {
         // set up the AJAX query URL
 
         var queryURL =
-                "https://api.pexels.com/v1/search?query="
-                + photoType
-                + "&per_page="
-                + photosPerPage
-                + "&page=1";
+            "https://api.pexels.com/v1/search?query=" +
+            photoType +
+            "&per_page=" +
+            photosPerPage +
+            "&page=1";
 
         console.log("photo URL:", queryURL);
 
@@ -309,9 +313,10 @@ $(document).ready(function() {
             url: queryURL,
             method: "GET",
             headers: {
-                Authorization: "563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484"
+                Authorization:
+                    "563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484"
             }
-        }).then(function (response) {
+        }).then(function(response) {
             console.log(response);
 
             for (let i = 0; i < 40; i++) {
@@ -320,20 +325,21 @@ $(document).ready(function() {
                 if (response.photos[i].width > response.photos[i].height) {
                     // create new Photo object to hold photo data and save new Photo
                     // in array of photo information
-                    var newPhoto = new Photo(response.photos[i].photographer,
-                                                response.photos[i].src.small);
+                    var newPhoto = new Photo(
+                        response.photos[i].photographer,
+                        response.photos[i].src.small
+                    );
                     photoInfo.push(newPhoto);
                 }
             }
 
             displayNextPhoto();
-        })
+        });
 
         //-----------------------------------------------------------
         // start the countdown timer
         //-----------------------------------------------------------
         setTimer();
-
 
         //-----------------------------------------------------------
         // display next photo from array "photoInfo"
@@ -346,21 +352,18 @@ $(document).ready(function() {
                 // clear out the area holding the current photo so the next one will replace it
                 $displayPhoto.empty();
                 var photoSpot = $("<img>");
-                photoSpot.attr(
-                    "src",
-                    foto.photo
-                );
-                $displayPhoto.append(photoSpot);       
+                photoSpot.attr("src", foto.photo);
+                $displayPhoto.append(photoSpot);
             } else {
                 clearInterval(timerInterval);
             }
         }
-        
+
         //-----------------------------------------------------------
-        // function to set countdown timer 
+        // function to set countdown timer
         //-----------------------------------------------------------
         function setTimer() {
-            console.log("start countdown"); 
+            console.log("start countdown");
             timerInterval = setInterval(displayNextPhoto, timerTime);
         }
 
@@ -369,7 +372,7 @@ $(document).ready(function() {
         //-----------------------------------------------------------
         function Photo(fotographer, picture) {
             this.photographer = fotographer;
-            this.photo        = picture;
+            this.photo = picture;
         }
     }
 
@@ -379,83 +382,78 @@ $(document).ready(function() {
 
     // Paring playlist to mood
 
-// I. user clicks mood they get playlist linked to mood
+    // I. user clicks mood they get playlist linked to mood
     // A. need music player on HTML
-        // i. next button
-       // ii. previous button
+    // i. next button
+    // ii. previous button
     // B. create a function that grabs a specific playlist id and returns 10 songs
-        // i. next funtion
-            // - play next song on playlist
-            // - TO DO: how to change src of audio element
-            // - create a way to go to the next index
-         // ii.  previous function
-            // - play previous song on playlist
-            // - create a way to go to the previous index
-            // 
- // II.  When user clicks mood they should see arist and song         
-     // A. Show artist
-        // i.TO DO : find where atist exsist in object "may have to do another api call" 
-        // ii.  
-        // iii.
-        // iv.
+    // i. next funtion
+    // - play next song on playlist
+    // - TO DO: how to change src of audio element
+    // - create a way to go to the next index
+    // ii.  previous function
+    // - play previous song on playlist
+    // - create a way to go to the previous index
+    //
+    // II.  When user clicks mood they should see arist and song
+    // A. Show artist
+    // i.TO DO : find where atist exsist in object "may have to do another api call"
+    // ii.
+    // iii.
+    // iv.
     // B.
-        // i.
-        // ii.  
-        // iii.
-        // iv.
+    // i.
+    // ii.
+    // iii.
+    // iv.
 
+    APIKey = "ZTM0M2ZjNDAtY2Y1Ny00MjQ1LWIxYmEtMzAwY2FlNDU2ZGNj";
 
-APIKey = "ZTM0M2ZjNDAtY2Y1Ny00MjQ1LWIxYmEtMzAwY2FlNDU2ZGNj";
+    var playlists = {
+        energetic: "pp.243995364",
+        tired: "pp.201748658",
+        happy: "pp.181321249",
+        calm: "pp.191473986",
+        hyper: "pp.283875163",
+        sad: "pp.162612012"
+    };
 
-var playlists = {
-  energetic: "pp.243995364",
-  tired: "pp.201748658",
-  happy: "pp.181321249",
-  calm: "pp.191473986",
-  hyper: "pp.283875163",
-  sad: "pp.162612012",
-};
-
-function loadPlaylist(mood){
-   console.info(typeof mood)
-  if(typeof playlists[mood.toLowerCase()] !== "undefined"){
-        let finalPlaylist = playlists[mood.toLowerCase()];
-        singlePlaylist(finalPlaylist);
-     } else{
-            console.log("error; no such playlist")
+    function loadPlaylist(mood) {
+        console.info(typeof mood);
+        if (typeof playlists[mood.toLowerCase()] !== "undefined") {
+            let finalPlaylist = playlists[mood.toLowerCase()];
+            singlePlaylist(finalPlaylist);
+        } else {
+            console.log("error; no such playlist");
         }
     }
-    
-    
-function singlePlaylist(playlistId) {
-  var queryURL = `http://api.napster.com/v2.2/playlists/${playlistId}/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`;
 
-  $.ajax({
-    url: queryURL,
+    function singlePlaylist(playlistId) {
+        var queryURL = `http://api.napster.com/v2.2/playlists/${playlistId}/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`;
 
-    method: "GET"
-  }).then(function(response) {
-    player.tracks = response.tracks;
-    player.init();
-    player.play();
+        $.ajax({
+            url: queryURL,
 
-  });
-}
+            method: "GET"
+        }).then(function(response) {
+            player.tracks = response.tracks;
+            player.init();
+            player.play();
+        });
+    }
 
-        let player = {
-          tracks:[],
-          currentIndex:0,
-          init(){
-              $("#display-area").append('<audio id="player" controls></audio>');
-        
-          },
-          play(){
-              $("#player").append(`<source src = "${this.tracks[this.currentIndex].previewURL}">`);
-        
-              document.querySelector('#player').play();
-          }
-        };
+    let player = {
+        tracks: [],
+        currentIndex: 0,
+        init() {
+            $("#display-area").append('<audio id="player" controls></audio>');
+        },
+        play() {
+            $("#player").append(
+                `<source src = "${this.tracks[this.currentIndex].previewURL}">`
+            );
 
-  
+            document.querySelector("#player").play();
+        }
+    };
 });
-
