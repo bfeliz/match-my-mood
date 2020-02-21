@@ -10,11 +10,13 @@ $(document).ready(function() {
         event.preventDefault();
         $(".modal").removeClass("is-active");
         $(".card").removeClass("is-hidden");
+        appendTime();
         getMood();
         setColor();
         getQuote();
         getPhotos();
-        appendTime();
+        loadPlaylist();
+        getArticle();
     });
 
     // get the mood from user input
@@ -22,10 +24,40 @@ $(document).ready(function() {
         var selectedMood = $(".select option:selected")
             .text()
             .trim();
-        if (selectedMood !== "I don't know, pick for me!") {
-            finalMood = selectedMood;
+
+        if ($("input[name=question]:checked", ".control").val() === "no") {
+            if (selectedMood !== "I don't know, pick for me!") {
+                switch (selectedMood) {
+                    case "Happy":
+                        finalMood = "Sad";
+                        break;
+                    case "Sad":
+                        finalMood = "Happy";
+                        break;
+                    case "Calm":
+                        finalMood = "Hyper";
+                        break;
+                    case "Hyper":
+                        finalMood = "Calm";
+                        break;
+                    case "Tired":
+                        finalMood = "Energetic";
+                        break;
+                    case "Energetic":
+                        finalMood = "Tired";
+                        break;
+                }
+            } else {
+                finalMood =
+                    moodArray[Math.floor(Math.random() * moodArray.length)];
+            }
         } else {
-            finalMood = moodArray[Math.floor(Math.random() * moodArray.length)];
+            if (selectedMood !== "I don't know, pick for me!") {
+                finalMood = selectedMood;
+            } else {
+                finalMood =
+                    moodArray[Math.floor(Math.random() * moodArray.length)];
+            }
         }
     }
 
@@ -36,31 +68,49 @@ $(document).ready(function() {
                 $("html")
                     .removeClass()
                     .addClass("bg-ha");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-ha");
                 break;
             case "Sad":
                 $("html")
                     .removeClass()
                     .addClass("bg-sa");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-sa");
                 break;
             case "Calm":
                 $("html")
                     .removeClass()
                     .addClass("bg-ca");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-ca");
                 break;
             case "Hyper":
                 $("html")
                     .removeClass()
                     .addClass("bg-hy");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-hy");
                 break;
             case "Tired":
                 $("html")
                     .removeClass()
                     .addClass("bg-ti");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-ti");
                 break;
             case "Energetic":
                 $("html")
                     .removeClass()
                     .addClass("bg-en");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-en");
         }
     }
 
@@ -92,12 +142,6 @@ $(document).ready(function() {
         var my_geolocation = JSON.parse(data);
         var latitude = my_geolocation[0];
         var longitude = my_geolocation[1];
-        console.log(
-            "Your saved geolocation is: latitude ",
-            latitude,
-            "longitude ",
-            longitude
-        );
         getCurrentWeather(latitude, longitude);
     }
 
@@ -106,17 +150,8 @@ $(document).ready(function() {
     //---------------------------------------------------------------------
 
     function success(pos) {
-        console.log(pos.coords);
-
         var latitude = pos.coords.latitude;
         var longitude = pos.coords.longitude;
-
-        console.log(
-            "Your geolocation is: latitude ",
-            latitude,
-            "longitude ",
-            longitude
-        );
 
         // save latitude and longitude in geolocation array
         my_geolocation.push(latitude);
@@ -154,26 +189,91 @@ $(document).ready(function() {
             url: queryURL,
             method: "GET"
         }).then(function(response) {
-            console.log(response);
-
-            var weatherIcon = $("<img>");
-
-            weatherIcon.attr(
-                "src",
-                "http://openweathermap.org/img/w/" +
-                    response.weather[0].icon +
-                    ".png"
-            );
-
+            // get date and time
             var myDate = moment().format("dddd, MMM Do");
             var myTime = moment().format("h:mm a");
             currDate = $("<h1>").text(myDate);
             currTime = $("<h1>").text(myTime);
 
+            // get weather icon
+            var wClass = "";
+            var cloudy = ["802", "803", "804"];
+            var storm = [
+                "200",
+                "201",
+                "202",
+                "210",
+                "211",
+                "212",
+                "221",
+                "230",
+                "231",
+                "232"
+            ];
+            var drizzle = [
+                "300",
+                "301",
+                "302",
+                "310",
+                "311",
+                "312",
+                "313",
+                "314",
+                "321"
+            ];
+            var rain = [
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "511",
+                "520",
+                "521",
+                "522",
+                "531"
+            ];
+            var snow = [
+                "600",
+                "601",
+                "602",
+                "611",
+                "612",
+                "613",
+                "615",
+                "616",
+                "620",
+                "621",
+                "622"
+            ];
+            var atmosphere = ["701", "711", "721", "731", "741", "751", "761"];
+
+            if (response.weather[0].id === 801) {
+                wClass = "wi wi-day-cloudy";
+            } else if (response.weather[0].id === 800) {
+                wClass = "wi wi-day-sunny";
+            } else if (jQuery.inArray("response.weather[0].id", cloudy)) {
+                wClass = "wi wi-cloudy";
+            } else if (jQuery.inArray("response.weather[0].id", storm)) {
+                wClass = "wi wi-owm-230";
+            } else if (jQuery.inArray("response.weather[0].id", drizzle)) {
+                wClass = "wi wi-owm-301";
+            } else if (jQuery.inArray("response.weather[0].id", rain)) {
+                wClass = "wi wi-owm-302";
+            } else if (jQuery.inArray("response.weather[0].id", snow)) {
+                wClass = "wi wi-owm-600";
+            } else if (jQuery.inArray("response.weather[0].id", atmosphere)) {
+                wClass = "wi wi-owm-731";
+            }
+
+            // append weather icon to date
+            var weatherIcon = $("<i>");
+            weatherIcon.addClass(wClass);
             currDate.append(weatherIcon);
         });
     }
 
+    // append time to DOM
     function appendTime() {
         $displayWeather.append(currDate);
         $displayWeather.append(currTime);
@@ -276,7 +376,7 @@ $(document).ready(function() {
                 photoType = "sunset";
                 break;
             case "Energetic":
-                photoType = "sky";
+                photoType = "beach";
         }
 
         // TESTING: override photoType
@@ -297,7 +397,7 @@ $(document).ready(function() {
             We add at least one new photo per hour to our curated list so that you get a changing selection of trending photos. 
         -------------------------------------------------------------------------------------------------------------*/
         
-        getNextPageOfPhotos();
+        getNextPageOfPhotos(); 
 
 
         function getNextPageOfPhotos() {
@@ -317,7 +417,7 @@ $(document).ready(function() {
                 var queryURL = nextPageOfPhotos;
             }
 
-            console.log("photo URL:", queryURL);
+            console.log("photo URL:", queryURL);  
 
             // AJAX call
 
@@ -366,7 +466,6 @@ $(document).ready(function() {
             console.log(currentPhoto);
             if (currentPhoto < photoInfo.length) {
                 var foto = photoInfo[currentPhoto];
-                console.log(foto.photographer);
                 // clear out the area holding the current photo so the next one will replace it
                 $displayPhoto.empty();
                 var photoSpot = $("<img>").attr("src", foto.photo);
@@ -394,7 +493,6 @@ $(document).ready(function() {
         // function to set countdown timer
         //-----------------------------------------------------------
         function setTimer() {
-            console.log("start countdown");
             timerInterval = setInterval(displayNextPhoto, timerTime);
         }
 
@@ -449,18 +547,14 @@ $(document).ready(function() {
         sad: "pp.162612012"
     };
 
-    function loadPlaylist(mood) {
-        console.info(typeof mood);
-        if (typeof playlists[mood.toLowerCase()] !== "undefined") {
-            let finalPlaylist = playlists[mood.toLowerCase()];
-            singlePlaylist(finalPlaylist);
-        } else {
-            console.log("error; no such playlist");
-        }
+    function loadPlaylist() {
+        var moodLowercase = finalMood.toLocaleLowerCase();
+        let finalPlaylist = playlists[moodLowercase];
+        singlePlaylist(finalPlaylist);
     }
 
-    function singlePlaylist(playlistId) {
-        var queryURL = `http://api.napster.com/v2.2/playlists/${playlistId}/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`;
+    function singlePlaylist(moodLowercase) {
+        var queryURL = `http://api.napster.com/v2.2/playlists/${moodLowercase}/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`;
 
         $.ajax({
             url: queryURL,
@@ -475,11 +569,22 @@ $(document).ready(function() {
 
     let player = {
         tracks: [],
-        currentIndex: 0,
+        currentIndex: Math.floor(Math.random() * 10),
+
         init() {
-            $("#display-area").append('<audio id="player" controls></audio>');
+            $("#audio-spot").append('<audio id="player" controls></audio>');
         },
         play() {
+            let songTitle = this.tracks[this.currentIndex].name;
+            let artist = this.tracks[this.currentIndex].artistName;
+            var songT = $("<p>");
+            songT.text(songTitle);
+            $("#song-info").append(songT);
+
+            var songA = $("<p>");
+            songA.text("By: " + artist);
+            $("#song-info").append(songA);
+
             $("#player").append(
                 `<source src = "${this.tracks[this.currentIndex].previewURL}">`
             );
@@ -487,4 +592,73 @@ $(document).ready(function() {
             document.querySelector("#player").play();
         }
     };
+
+    //--------------------------------------------------------------------------
+    // ARTICLE FUNCTIONS
+    //---------------------------------------------------------------------------
+
+    function getArticle() {
+        var articleKey = "";
+
+        switch (finalMood) {
+            case "Happy":
+                articleKey = "happiness";
+                break;
+            case "Sad":
+                articleKey = "solitude";
+                break;
+            case "Calm":
+                articleKey = "nature";
+                break;
+            case "Hyper":
+                articleKey = "hyper";
+                break;
+            case "Tired":
+                articleKey = "art";
+                break;
+            case "Energetic":
+                articleKey = "energetic";
+        }
+        var articleQueryURL =
+            "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=PV7q6CymGpwmm5FszG8i5ZWTzvmDvnxQ&q=" +
+            articleKey;
+
+        console.log(articleQueryURL),
+            // article AJAX call
+            $.ajax({
+                type: "GET",
+                url: articleQueryURL
+            }).then(function(response) {
+                console.log(response);
+                var randomArticle =
+                    response.response.docs[
+                        Math.floor(
+                            Math.random() * response.response.docs.length
+                        )
+                    ];
+                console.log(randomArticle);
+                // // push the random article onto the DOM
+                var aHeadline = $("<p>");
+                aHeadline.addClass("title").text(randomArticle.headline.main);
+                $(".article-content").append(aHeadline);
+
+                var newAbstract = "";
+
+                if (randomArticle.abstract.length > 420) {
+                    newAbstract =
+                        randomArticle.abstract.substring(0, 420) + "...";
+                } else {
+                    newAbstract = randomArticle.abstract;
+                }
+                var aAbstract = $("<p>");
+                aAbstract.addClass("subtitle").text(newAbstract);
+                $(".article-content").append(aAbstract);
+
+                var aURL = $("<a>");
+                aURL.addClass("subtitle")
+                    .attr("href", randomArticle.web_url)
+                    .text("Read article here");
+                $(".article-content").append(aURL);
+            });
+    }
 });
