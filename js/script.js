@@ -342,17 +342,16 @@ $(document).ready(function() {
     //---------------------------------------------------------------------------
 
     function getPhotos() {
-
         // Capture selector for HTML area to hold photos
         var $displayPhoto = $("#display-photo");
- 
+
         var photoType = "";
         var photosPerPage = 80;
-        var timerTime = 10000;       // 10 second delay between photos
-        var nextPageOfPhotos = "";          // undefined
+        var timerTime = 10000; // 10 second delay between photos
+        var nextPageOfPhotos = ""; // undefined
 
         var currentPhoto = -1;
-        var photoInfo    = [];        // clear out photo info array
+        var photoInfo = []; // clear out photo info array
 
         // API key for Pexels:
         // 563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484
@@ -396,14 +395,12 @@ $(document).ready(function() {
 
             We add at least one new photo per hour to our curated list so that you get a changing selection of trending photos. 
         -------------------------------------------------------------------------------------------------------------*/
-        
-        getNextPageOfPhotos(); 
 
+        getNextPageOfPhotos();
 
         function getNextPageOfPhotos() {
-
             currentPhoto = -1;
-            photoInfo    = [];        // clear out photo info array
+            photoInfo = []; // clear out photo info array
 
             // set up the AJAX query URL
             if (nextPageOfPhotos === "") {
@@ -417,7 +414,7 @@ $(document).ready(function() {
                 var queryURL = nextPageOfPhotos;
             }
 
-            console.log("photo URL:", queryURL);  
+            console.log("photo URL:", queryURL);
 
             // AJAX call
 
@@ -450,12 +447,11 @@ $(document).ready(function() {
                 }
                 console.log("photo array length: ", photoInfo.length);
                 displayNextPhoto();
-    
+
                 // start the countdown timer
                 setTimer();
-            })
+            });
         }
-
 
         //-----------------------------------------------------------
         // display next photo from array "photoInfo"
@@ -471,23 +467,20 @@ $(document).ready(function() {
                 var photoSpot = $("<img>").attr("src", foto.photo);
                 $displayPhoto.append(photoSpot);
                 $displayPhoto.fadeIn(1500);
-                var fade = setTimeout(fadePhoto, 8000);      
-            }
-             else {
+                var fade = setTimeout(fadePhoto, 8000);
+            } else {
                 clearTimeout(fade);
                 clearInterval(timerInterval);
                 if (typeof nextPageOfPhotos !== "undefined") {
-                   getNextPageOfPhotos();
+                    getNextPageOfPhotos();
                 }
-             }
+            }
         }
-
 
         function fadePhoto() {
             console.log("fadePhoto");
-            $displayPhoto.fadeOut(1500);   //,"linear");
+            $displayPhoto.fadeOut(1500); //,"linear");
         }
- 
 
         //-----------------------------------------------------------
         // function to set countdown timer
@@ -508,33 +501,6 @@ $(document).ready(function() {
     //--------------------------------------------------------------------------
     // SONG FUNCTIONS
     //---------------------------------------------------------------------------
-
-    // Paring playlist to mood
-
-    // I. user clicks mood they get playlist linked to mood
-    // A. need music player on HTML
-    // i. next button
-    // ii. previous button
-    // B. create a function that grabs a specific playlist id and returns 10 songs
-    // i. next funtion
-    // - play next song on playlist
-    // - TO DO: how to change src of audio element
-    // - create a way to go to the next index
-    // ii.  previous function
-    // - play previous song on playlist
-    // - create a way to go to the previous index
-    //
-    // II.  When user clicks mood they should see arist and song
-    // A. Show artist
-    // i.TO DO : find where atist exsist in object "may have to do another api call"
-    // ii.
-    // iii.
-    // iv.
-    // B.
-    // i.
-    // ii.
-    // iii.
-    // iv.
 
     APIKey = "ZTM0M2ZjNDAtY2Y1Ny00MjQ1LWIxYmEtMzAwY2FlNDU2ZGNj";
 
@@ -562,34 +528,78 @@ $(document).ready(function() {
             method: "GET"
         }).then(function(response) {
             player.tracks = response.tracks;
+            console.log(response.tracks);
             player.init();
             player.play();
         });
     }
 
     let player = {
+        htmlPlayer: null,
         tracks: [],
         currentIndex: Math.floor(Math.random() * 10),
 
-        init() {
-            $("#audio-spot").append('<audio id="player" controls></audio>');
-        },
         play() {
             let songTitle = this.tracks[this.currentIndex].name;
             let artist = this.tracks[this.currentIndex].artistName;
-            var songT = $("<p>");
-            songT.text(songTitle);
-            $("#song-info").append(songT);
+            console.log(songTitle);
+            console.log(artist);
 
-            var songA = $("<p>");
-            songA.text("By: " + artist);
-            $("#song-info").append(songA);
+            let songHtml = `<p class="song-title">${songTitle}</p>`;
+            songHtml += `<p class="artist-name">${artist}</p>`;
 
+            $("#current-song").html(songHtml);
+
+            // htmlPlayer.load();
+            this.htmlPlayer.play();
+        },
+        next() {
+            this.htmlPlayer.pause();
+            this.currentIndex++;
+            if (typeof this.tracks[this.currentIndex] === "undefined") {
+                this.currentIndex = 0;
+            }
+            document.getElementById("currentTrackSource").src = this.tracks[
+                this.currentIndex
+            ].previewURL;
+            console.log(this.tracks[this.currentIndex].previewURL);
+            this.htmlPlayer.load();
+            this.play();
+        },
+        previous() {
+            this.htmlPlayer.pause();
+            if (this.currentIndex > 0) {
+                this.currentIndex--;
+            } else {
+                this.currentIndex = this.tracks.length - 1;
+            }
+            document.getElementById("currentTrackSource").src = this.tracks[
+                this.currentIndex
+            ].previewURL;
+            this.htmlPlayer.load();
+            this.play();
+        },
+
+        init() {
+            $("#song-content").append('<audio id="player" controls></audio>');
+            this.htmlPlayer = document.getElementById("player");
             $("#player").append(
-                `<source src = "${this.tracks[this.currentIndex].previewURL}">`
+                `<source id="currentTrackSource" src="${
+                    this.tracks[this.currentIndex].previewURL
+                }">`
             );
+            $("#song-content").append('<div id="current-song"></div>');
 
-            document.querySelector("#player").play();
+            document
+                .getElementById("next-button")
+                .addEventListener("click", function() {
+                    player.next();
+                });
+            document
+                .getElementById("previous-button")
+                .addEventListener("click", function() {
+                    player.previous();
+                });
         }
     };
 
