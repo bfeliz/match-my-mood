@@ -73,9 +73,6 @@ $(document).ready(function() {
     // Capture selector for HTML area to hold current weather data
     var $displayWeather = $("#display-weather");
 
-    // Capture selector for HTML area to hold photos
-    var $displayPhoto = $("#display-photo");
-
     // This is my (JimG) weather API key.
     var APIKey = "7514abfe02ab6db7877685958ec119d7";
 
@@ -245,13 +242,17 @@ $(document).ready(function() {
     //---------------------------------------------------------------------------
 
     function getPhotos() {
-        //debugger;
+
+        // Capture selector for HTML area to hold photos
+        var $displayPhoto = $("#display-photo");
+ 
+        var photoType = "";
+        var photosPerPage = 80;
+        var timerTime = 10000;       // 10 second delay between photos
+        var nextPageOfPhotos = "";          // undefined
 
         var currentPhoto = -1;
-        var photoType = "";
-        var photoInfo = []; // You may request upto 80 photos per page
-        var photosPerPage = 80;
-        var timerTime = 10000; // 10 second delay between photos
+        var photoInfo    = [];        // clear out photo info array
 
         // API key for Pexels:
         // 563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484
@@ -284,7 +285,7 @@ $(document).ready(function() {
         //  sunset, sky, mountains, sea, sad, night, light, desert, universe,
         //  forest, fire, beach, tree, trees, rain, earth, flowers, flower, clouds, smile
 
-        /*  ---------------------------------------------------------------------------------------------------------------
+        /*  -----------------------------------------------------------------------------------------------------------
             Whenever you are doing an API request make sure to show a prominent link to Pexels.
             You can use a text link (e.g. "Photos provided by Pexels") or a link with our logo (Download our logo in white or black).
             Always credit our photographers when possible (e.g. "Photo by John Doe on Pexels" with a link to the photo page on Pexels).
@@ -295,69 +296,99 @@ $(document).ready(function() {
 
             We add at least one new photo per hour to our curated list so that you get a changing selection of trending photos. 
         -------------------------------------------------------------------------------------------------------------*/
+        
+        getNextPageOfPhotos();
 
-        // set up the AJAX query URL
 
-        var queryURL =
-            "https://api.pexels.com/v1/search?query=" +
-            photoType +
-            "&per_page=" +
-            photosPerPage +
-            "&page=1";
+        function getNextPageOfPhotos() {
 
-        console.log("photo URL:", queryURL);
+            currentPhoto = -1;
+            photoInfo    = [];        // clear out photo info array
 
-        // AJAX call
-
-        $.ajax({
-            url: queryURL,
-            method: "GET",
-            headers: {
-                Authorization:
-                    "563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484"
+            // set up the AJAX query URL
+            if (nextPageOfPhotos === "") {
+                var queryURL =
+                    "https://api.pexels.com/v1/search?query=" +
+                    photoType +
+                    "&per_page=" +
+                    photosPerPage +
+                    "&page=1";
+            } else {
+                var queryURL = nextPageOfPhotos;
             }
-        }).then(function(response) {
-            console.log(response);
 
-            for (let i = 0; i < 40; i++) {
-                //console.log(response.photos[i].id,
-                //    response.photos[i].photographer);
-                if (response.photos[i].width > response.photos[i].height) {
-                    // create new Photo object to hold photo data and save new Photo
-                    // in array of photo information
-                    var newPhoto = new Photo(
-                        response.photos[i].photographer,
-                        response.photos[i].src.small
-                    );
-                    photoInfo.push(newPhoto);
+            console.log("photo URL:", queryURL);
+
+            // AJAX call
+
+            $.ajax({
+                url: queryURL,
+                method: "GET",
+                headers: {
+                    Authorization:
+                        "563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484"
                 }
-            }
+            }).then(function(response) {
+                console.log(response);
 
-            displayNextPhoto();
-        });
+                nextPageOfPhotos = response.next_page;
+                console.log("Resp photos len: ", response.photos.length);
+                console.log("Next page: ", response.next_page);
 
-        //-----------------------------------------------------------
-        // start the countdown timer
-        //-----------------------------------------------------------
-        setTimer();
+                for (let i = 0; i < response.photos.length; i++) {
+                    //console.log(response.photos[i].id,
+                    //    response.photos[i].photographer);
+                    if (response.photos[i].width > response.photos[i].height) {
+                        // create new Photo object to hold photo data and save new Photo
+                        // in array of photo information
+                        var newPhoto = new Photo(
+                            response.photos[i].photographer,
+                            response.photos[i].src.medium
+                        );
+                        photoInfo.push(newPhoto);
+                    }
+                }
+                console.log("photo array length: ", photoInfo.length);
+                displayNextPhoto();
+    
+                // start the countdown timer
+                setTimer();
+            })
+        }
+
 
         //-----------------------------------------------------------
         // display next photo from array "photoInfo"
         //-----------------------------------------------------------
         function displayNextPhoto() {
+            //debugger;
             currentPhoto++;
+            console.log(currentPhoto);
             if (currentPhoto < photoInfo.length) {
                 var foto = photoInfo[currentPhoto];
                 console.log(foto.photographer);
                 // clear out the area holding the current photo so the next one will replace it
                 $displayPhoto.empty();
-                var photoSpot = $("<img>");
-                photoSpot.attr("src", foto.photo);
+                var photoSpot = $("<img>").attr("src", foto.photo);
                 $displayPhoto.append(photoSpot);
-            } else {
-                clearInterval(timerInterval);
+                $displayPhoto.fadeIn(1500);
+                var fade = setTimeout(fadePhoto, 8000);      
             }
+             else {
+                clearTimeout(fade);
+                clearInterval(timerInterval);
+                if (typeof nextPageOfPhotos !== "undefined") {
+                   getNextPageOfPhotos();
+                }
+             }
         }
+
+
+        function fadePhoto() {
+            console.log("fadePhoto");
+            $displayPhoto.fadeOut(1500);   //,"linear");
+        }
+ 
 
         //-----------------------------------------------------------
         // function to set countdown timer
