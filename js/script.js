@@ -190,7 +190,7 @@ $(document).ready(function() {
             method: "GET"
         }).then(function(response) {
             // get date and time
-            var myDate = moment().format("dddd, MMM Do");
+            var myDate = moment().format("dddd, MMMM Do");
             var myTime = moment().format("h:mm a");
             currDate = $("<h1>").text(myDate);
             currTime = $("<h1>").text(myTime);
@@ -542,13 +542,20 @@ $(document).ready(function() {
         play() {
             let songTitle = this.tracks[this.currentIndex].name;
             let artist = this.tracks[this.currentIndex].artistName;
-            console.log(songTitle);
-            console.log(artist);
 
-            let songHtml = `<p class="song-title">${songTitle}</p>`;
-            songHtml += `<p class="artist-name">${artist}</p>`;
+            var newSongTitle = "";
 
-            $("#current-song").html(songHtml);
+            if (songTitle.length > 50) {
+                newSongTitle = songTitle.substring(0, 50) + "...";
+            } else {
+                newSongTitle = songTitle;
+            }
+
+            let songHtml = `<p class="song-title">${"Song: " +
+                newSongTitle}</p>`;
+            songHtml += `<p class="artist-name">${"By: " + artist}</p>`;
+
+            $(".content").html(songHtml);
 
             // htmlPlayer.load();
             this.htmlPlayer.play();
@@ -590,16 +597,30 @@ $(document).ready(function() {
             );
             $("#song-content").append('<div id="current-song"></div>');
 
-            document
-                .getElementById("next-button")
-                .addEventListener("click", function() {
-                    player.next();
-                });
-            document
-                .getElementById("previous-button")
-                .addEventListener("click", function() {
-                    player.previous();
-                });
+            var previous = $("<a>");
+            previous
+                .addClass("previous-button")
+                .attr("href", "#")
+                .text("Previous")
+                .css({ color: "white", "padding-right": "40px" });
+            $("#song-content").append(previous);
+
+            $(".previous-button").on("click", function(event) {
+                event.preventDefault();
+                player.previous();
+            });
+
+            var next = $("<a>");
+            next.addClass("next-button")
+                .attr("href", "#")
+                .text("Next")
+                .css("color", "white");
+            $("#song-content").append(next);
+
+            $(".next-button").on("click", function(event) {
+                event.preventDefault();
+                player.next();
+            });
         }
     };
 
@@ -654,9 +675,9 @@ $(document).ready(function() {
 
                 var newAbstract = "";
 
-                if (randomArticle.abstract.length > 420) {
+                if (randomArticle.abstract.length > 250) {
                     newAbstract =
-                        randomArticle.abstract.substring(0, 420) + "...";
+                        randomArticle.abstract.substring(0, 250) + "...";
                 } else {
                     newAbstract = randomArticle.abstract;
                 }
