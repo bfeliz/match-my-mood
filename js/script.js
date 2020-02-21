@@ -124,7 +124,7 @@ $(document).ready(function() {
     var $displayWeather = $("#display-weather");
 
     // This is my (JimG) weather API key.
-    var APIKey = "7514abfe02ab6db7877685958ec119d7";
+    var weatherAPIKey = "7514abfe02ab6db7877685958ec119d7";
 
     //---------------------------------------------------------------------------
     // get geolocation (latitude & longitude) from local storage if it exists,
@@ -173,7 +173,7 @@ $(document).ready(function() {
 
         var queryURL =
             "https://api.openweathermap.org/data/2.5/weather?appid=" +
-            APIKey +
+            weatherAPIKey +
             "&units=imperial&lat=" +
             lat +
             "&lon=" +
@@ -498,8 +498,6 @@ $(document).ready(function() {
     // SONG FUNCTIONS
     //---------------------------------------------------------------------------
 
-    APIKey = "ZTM0M2ZjNDAtY2Y1Ny00MjQ1LWIxYmEtMzAwY2FlNDU2ZGNj";
-
     var playlists = {
         energetic: "pp.243995364",
         tired: "pp.201748658",
@@ -516,7 +514,7 @@ $(document).ready(function() {
     }
 
     function singlePlaylist(moodLowercase) {
-        var queryURL = `http://api.napster.com/v2.2/playlists/${moodLowercase}/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`;
+        var queryURL = `https://api.napster.com/v2.2/playlists/${moodLowercase}/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`;
 
         $.ajax({
             url: queryURL,
