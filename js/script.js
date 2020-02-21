@@ -16,6 +16,7 @@ $(document).ready(function() {
         getQuote();
         getPhotos();
         loadPlaylist();
+        getArticle();
     });
 
     // get the mood from user input
@@ -542,18 +543,87 @@ $(document).ready(function() {
             let songTitle = this.tracks[this.currentIndex].name;
             let artist = this.tracks[this.currentIndex].artistName;
             var songT = $("<p>");
-            songT.text("Title: " + songTitle);
+            songT.text(songTitle);
             $("#song-info").append(songT);
 
             var songA = $("<p>");
-            songA.text("Artist: " + artist);
+            songA.text("By: " + artist);
             $("#song-info").append(songA);
 
             $("#player").append(
                 `<source src = "${this.tracks[this.currentIndex].previewURL}">`
             );
 
-            // document.querySelector("#player").play();
+            document.querySelector("#player").play();
         }
     };
+
+    //--------------------------------------------------------------------------
+    // ARTICLE FUNCTIONS
+    //---------------------------------------------------------------------------
+
+    function getArticle() {
+        var articleKey = "";
+
+        switch (finalMood) {
+            case "Happy":
+                articleKey = "happiness";
+                break;
+            case "Sad":
+                articleKey = "solitude";
+                break;
+            case "Calm":
+                articleKey = "nature";
+                break;
+            case "Hyper":
+                articleKey = "hyper";
+                break;
+            case "Tired":
+                articleKey = "art";
+                break;
+            case "Energetic":
+                articleKey = "energetic";
+        }
+        var articleQueryURL =
+            "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=PV7q6CymGpwmm5FszG8i5ZWTzvmDvnxQ&q=" +
+            articleKey;
+
+        console.log(articleQueryURL),
+            // article AJAX call
+            $.ajax({
+                type: "GET",
+                url: articleQueryURL
+            }).then(function(response) {
+                console.log(response);
+                var randomArticle =
+                    response.response.docs[
+                        Math.floor(
+                            Math.random() * response.response.docs.length
+                        )
+                    ];
+                console.log(randomArticle);
+                // // push the random article onto the DOM
+                var aHeadline = $("<p>");
+                aHeadline.addClass("title").text(randomArticle.headline.main);
+                $(".article-content").append(aHeadline);
+
+                var newAbstract = "";
+
+                if (randomArticle.abstract.length > 420) {
+                    newAbstract =
+                        randomArticle.abstract.substring(0, 420) + "...";
+                } else {
+                    newAbstract = randomArticle.abstract;
+                }
+                var aAbstract = $("<p>");
+                aAbstract.addClass("subtitle").text(newAbstract);
+                $(".article-content").append(aAbstract);
+
+                var aURL = $("<a>");
+                aURL.addClass("subtitle")
+                    .attr("href", randomArticle.web_url)
+                    .text("Read article here");
+                $(".article-content").append(aURL);
+            });
+    }
 });
