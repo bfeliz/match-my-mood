@@ -124,7 +124,7 @@ $(document).ready(function() {
     var $displayWeather = $("#display-weather");
 
     // This is my (JimG) weather API key.
-    var APIKey = "7514abfe02ab6db7877685958ec119d7";
+    var weatherAPIKey = "7514abfe02ab6db7877685958ec119d7";
 
     //---------------------------------------------------------------------------
     // get geolocation (latitude & longitude) from local storage if it exists,
@@ -177,7 +177,7 @@ $(document).ready(function() {
 
         var queryURL =
             "https://api.openweathermap.org/data/2.5/weather?appid=" +
-            APIKey +
+            weatherAPIKey +
             "&units=imperial&lat=" +
             lat +
             "&lon=" +
@@ -344,11 +344,13 @@ $(document).ready(function() {
     function getPhotos() {
         // Capture selector for HTML area to hold photos
         var $displayPhoto = $("#display-photo");
+        //var $displayPhoto = $(".photo-content");
+
 
         var photoType = "";
         var photosPerPage = 80;
-        var timerTime = 10000; // 10 second delay between photos
-        var nextPageOfPhotos = ""; // undefined
+        var timerTime = 10000;     // 10 second delay between photos
+        var nextPageOfPhotos = "";
 
         var currentPhoto = -1;
         var photoInfo = []; // clear out photo info array
@@ -356,31 +358,51 @@ $(document).ready(function() {
         // API key for Pexels:
         // 563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484
 
+        var photoTypesHappy = ["flowers", "smile", "flower", "fun", "sky"];
+        var photoTypesSad   = ["sad", "rain", "clouds", "sea", "desert"];
+        var photoTypesCalm  = ["landscape", "universe", "sunset", "nature", "mountains"];
+        var photoTypesHyper = ["fire", "gym", "party", "kids"];
+        var photoTypesTired = ["night", "forest", "light", "tree"];
+        var photoTypesEnergetic = ["adventure", "sport", "success", "newyork"];
+        //   beach, trees, earth, 
+
         // set photo search parameter based on mood.
 
         switch (finalMood) {
             case "Happy":
-                photoType = "flowers";
+                //photoType = "flowers";
+                var idx = (Math.floor(Math.random() * photoTypesHappy.length));
+                photoType = photoTypesHappy[idx];
                 break;
             case "Sad":
-                photoType = "sad";
+                //photoType = "sad";
+                var idx = (Math.floor(Math.random() * photoTypesSad.length));
+                photoType = photoTypesSad[idx];
                 break;
             case "Calm":
-                photoType = "landscape";
+                //photoType = "landscape";
+                var idx = (Math.floor(Math.random() * photoTypesCalm.length));
+                photoType = photoTypesCalm[idx];
                 break;
             case "Hyper":
-                photoType = "fire";
+                //photoType = "fire";
+                var idx = (Math.floor(Math.random() * photoTypesHyper.length));
+                photoType = photoTypesHyper[idx];
                 break;
             case "Tired":
-                photoType = "sunset";
+                //photoType = "sunset";
+                var idx = (Math.floor(Math.random() * photoTypesTired.length));
+                photoType = photoTypesTired[idx];
                 break;
             case "Energetic":
-                photoType = "beach";
+                //photoType = "beach";
+                var idx = (Math.floor(Math.random() * photoTypesEnergetic.length));
+                photoType = photoTypesEnergetic[idx];
         }
 
-        // TESTING: override photoType
-        //var photoType = "universe";
-        // Some of the choices are:
+        console.log("Photo type:", photoType);
+
+         // Some of the choices are:
         //  sunset, sky, mountains, sea, sad, night, light, desert, universe,
         //  forest, fire, beach, tree, trees, rain, earth, flowers, flower, clouds, smile
 
@@ -390,10 +412,6 @@ $(document).ready(function() {
             Always credit our photographers when possible (e.g. "Photo by John Doe on Pexels" with a link to the photo page on Pexels).
             Do not copy core functionality of Pexels.
             Do not abuse the API. The API is rate-limited to 200 requests per hour and 20,000 requests per month. (For higher limits contact us).
-
-            If you want to get a random photo, you can use the "Curated photos" endpoint and set per_page to 1 and page to a random number between 1 and 1000 to get a beautiful random photo. You can do the same with popular searches if you want to get a random photo with a specific topic.
-
-            We add at least one new photo per hour to our curated list so that you get a changing selection of trending photos. 
         -------------------------------------------------------------------------------------------------------------*/
 
         getNextPageOfPhotos();
@@ -440,7 +458,11 @@ $(document).ready(function() {
                         // in array of photo information
                         var newPhoto = new Photo(
                             response.photos[i].photographer,
-                            response.photos[i].src.medium
+                            response.photos[i].id,
+                            response.photos[i].width,
+                            response.photos[i].height,
+                            //response.photos[i].src.medium
+                            response.photos[i].src.landscape
                         );
                         photoInfo.push(newPhoto);
                     }
@@ -455,18 +477,30 @@ $(document).ready(function() {
 
         //-----------------------------------------------------------
         // display next photo from array "photoInfo"
+        // "https://images.pexels.com/lib/api/pexels-white.png"
         //-----------------------------------------------------------
         function displayNextPhoto() {
             //debugger;
             currentPhoto++;
-            console.log(currentPhoto);
+            //console.log(currentPhoto);
+            //if (currentPhoto < 5) {
             if (currentPhoto < photoInfo.length) {
                 var foto = photoInfo[currentPhoto];
+                console.log(foto.photoId, "width: ", foto.photoWidth, "height: ", foto.photoHeight);
                 // clear out the area holding the current photo so the next one will replace it
                 $displayPhoto.empty();
                 var photoSpot = $("<img>").attr("src", foto.photo);
                 $displayPhoto.append(photoSpot);
+                debugger;
+                // setup photo credit 
+                var aURL = $("<a>");
+                aURL.addClass("subtitle")
+                     .attr("href", "https://www.pexels.com/")
+                     .text(foto.fotographer);
+                 $displayPhoto.append(aURL);
+                // fade-in in 1.5 seconds
                 $displayPhoto.fadeIn(1500);
+                // set timer to start fade-out in 8 seconds
                 var fade = setTimeout(fadePhoto, 8000);
             } else {
                 clearTimeout(fade);
@@ -476,10 +510,10 @@ $(document).ready(function() {
                 }
             }
         }
-
+ 
         function fadePhoto() {
             console.log("fadePhoto");
-            $displayPhoto.fadeOut(1500); //,"linear");
+            $displayPhoto.fadeOut(1500);
         }
 
         //-----------------------------------------------------------
@@ -492,8 +526,11 @@ $(document).ready(function() {
         //-----------------------------------------------------------
         // Constructor function for Photo objects
         //-----------------------------------------------------------
-        function Photo(fotographer, picture) {
+        function Photo(fotographer, picId, picWidth, picHeight, picture) {
             this.photographer = fotographer;
+            this.photoId = picId;
+            this.photoWidth = picWidth;
+            this.photoHeight = picHeight;
             this.photo = picture;
         }
     }
@@ -502,7 +539,7 @@ $(document).ready(function() {
     // SONG FUNCTIONS
     //---------------------------------------------------------------------------
 
-    APIKey = "ZTM0M2ZjNDAtY2Y1Ny00MjQ1LWIxYmEtMzAwY2FlNDU2ZGNj";
+    //APIKey = "ZTM0M2ZjNDAtY2Y1Ny00MjQ1LWIxYmEtMzAwY2FlNDU2ZGNj";
 
     var playlists = {
         energetic: "pp.243995364",
@@ -520,7 +557,7 @@ $(document).ready(function() {
     }
 
     function singlePlaylist(moodLowercase) {
-        var queryURL = `http://api.napster.com/v2.2/playlists/${moodLowercase}/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`;
+        var queryURL = `https://api.napster.com/v2.2/playlists/${moodLowercase}/tracks?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&limit=10`;
 
         $.ajax({
             url: queryURL,
