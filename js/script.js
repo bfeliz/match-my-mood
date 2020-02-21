@@ -16,6 +16,7 @@ $(document).ready(function() {
         getQuote();
         getPhotos();
         loadPlaylist();
+        getArticle();
     });
 
     // get the mood from user input
@@ -23,10 +24,40 @@ $(document).ready(function() {
         var selectedMood = $(".select option:selected")
             .text()
             .trim();
-        if (selectedMood !== "I don't know, pick for me!") {
-            finalMood = selectedMood;
+
+        if ($("input[name=question]:checked", ".control").val() === "no") {
+            if (selectedMood !== "I don't know, pick for me!") {
+                switch (selectedMood) {
+                    case "Happy":
+                        finalMood = "Sad";
+                        break;
+                    case "Sad":
+                        finalMood = "Happy";
+                        break;
+                    case "Calm":
+                        finalMood = "Hyper";
+                        break;
+                    case "Hyper":
+                        finalMood = "Calm";
+                        break;
+                    case "Tired":
+                        finalMood = "Energetic";
+                        break;
+                    case "Energetic":
+                        finalMood = "Tired";
+                        break;
+                }
+            } else {
+                finalMood =
+                    moodArray[Math.floor(Math.random() * moodArray.length)];
+            }
         } else {
-            finalMood = moodArray[Math.floor(Math.random() * moodArray.length)];
+            if (selectedMood !== "I don't know, pick for me!") {
+                finalMood = selectedMood;
+            } else {
+                finalMood =
+                    moodArray[Math.floor(Math.random() * moodArray.length)];
+            }
         }
     }
 
@@ -37,31 +68,49 @@ $(document).ready(function() {
                 $("html")
                     .removeClass()
                     .addClass("bg-ha");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-ha");
                 break;
             case "Sad":
                 $("html")
                     .removeClass()
                     .addClass("bg-sa");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-sa");
                 break;
             case "Calm":
                 $("html")
                     .removeClass()
                     .addClass("bg-ca");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-ca");
                 break;
             case "Hyper":
                 $("html")
                     .removeClass()
                     .addClass("bg-hy");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-hy");
                 break;
             case "Tired":
                 $("html")
                     .removeClass()
                     .addClass("bg-ti");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-ti");
                 break;
             case "Energetic":
                 $("html")
                     .removeClass()
                     .addClass("bg-en");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-en");
         }
     }
 
@@ -143,11 +192,13 @@ $(document).ready(function() {
             url: queryURL,
             method: "GET"
         }).then(function(response) {
+            // get date and time
             var myDate = moment().format("dddd, MMM Do");
             var myTime = moment().format("h:mm a");
             currDate = $("<h1>").text(myDate);
             currTime = $("<h1>").text(myTime);
 
+            // get weather icon
             var wClass = "";
             var cloudy = ["802", "803", "804"];
             var storm = [
@@ -218,12 +269,14 @@ $(document).ready(function() {
                 wClass = "wi wi-owm-731";
             }
 
+            // append weather icon to date
             var weatherIcon = $("<i>");
             weatherIcon.addClass(wClass);
             currDate.append(weatherIcon);
         });
     }
 
+    // append time to DOM
     function appendTime() {
         $displayWeather.append(currDate);
         $displayWeather.append(currTime);
@@ -322,7 +375,7 @@ $(document).ready(function() {
                 photoType = "sunset";
                 break;
             case "Energetic":
-                photoType = "sky";
+                photoType = "beach";
         }
 
         // TESTING: override photoType
@@ -474,52 +527,103 @@ $(document).ready(function() {
             method: "GET"
         }).then(function(response) {
             player.tracks = response.tracks;
-            console.log(response.tracks)
             player.init();
             player.play();
         });
-
     }
 
-    
-
-      
- let player = {
+    let player = {
         tracks: [],
         currentIndex: Math.floor(Math.random() * 10),
-        
+
+        init() {
+            $("#audio-spot").append('<audio id="player" controls></audio>');
+        },
         play() {
             let songTitle = this.tracks[this.currentIndex].name;
             let artist = this.tracks[this.currentIndex].artistName;
-            console.log(songTitle)
-            console.log(artist)
             var songT = $("<p>");
             songT.text(songTitle);
-            $("#song-content").append(songT);
+            $("#song-info").append(songT);
 
             var songA = $("<p>");
-            songA.text(artist);
-            $("#song-content").append(songA);
-            
+            songA.text("By: " + artist);
+            $("#song-info").append(songA);
+
             $("#player").append(
                 `<source src = "${this.tracks[this.currentIndex].previewURL}">`
-                
-                
-            )
+            );
 
             document.querySelector("#player").play();
-            
-        },
-       
-       
-       
-       
-       
-        init() {
-            $("#song-content").append('<audio id="player" controls></audio>');
         }
-    
-        
-        
     };
+
+    //--------------------------------------------------------------------------
+    // ARTICLE FUNCTIONS
+    //---------------------------------------------------------------------------
+
+    function getArticle() {
+        var articleKey = "";
+
+        switch (finalMood) {
+            case "Happy":
+                articleKey = "happiness";
+                break;
+            case "Sad":
+                articleKey = "solitude";
+                break;
+            case "Calm":
+                articleKey = "nature";
+                break;
+            case "Hyper":
+                articleKey = "hyper";
+                break;
+            case "Tired":
+                articleKey = "art";
+                break;
+            case "Energetic":
+                articleKey = "energetic";
+        }
+        var articleQueryURL =
+            "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=PV7q6CymGpwmm5FszG8i5ZWTzvmDvnxQ&q=" +
+            articleKey;
+
+        console.log(articleQueryURL),
+            // article AJAX call
+            $.ajax({
+                type: "GET",
+                url: articleQueryURL
+            }).then(function(response) {
+                console.log(response);
+                var randomArticle =
+                    response.response.docs[
+                        Math.floor(
+                            Math.random() * response.response.docs.length
+                        )
+                    ];
+                console.log(randomArticle);
+                // // push the random article onto the DOM
+                var aHeadline = $("<p>");
+                aHeadline.addClass("title").text(randomArticle.headline.main);
+                $(".article-content").append(aHeadline);
+
+                var newAbstract = "";
+
+                if (randomArticle.abstract.length > 420) {
+                    newAbstract =
+                        randomArticle.abstract.substring(0, 420) + "...";
+                } else {
+                    newAbstract = randomArticle.abstract;
+                }
+                var aAbstract = $("<p>");
+                aAbstract.addClass("subtitle").text(newAbstract);
+                $(".article-content").append(aAbstract);
+
+                var aURL = $("<a>");
+                aURL.addClass("subtitle")
+                    .attr("href", randomArticle.web_url)
+                    .text("Read article here");
+                $(".article-content").append(aURL);
+            });
+    }
 });
