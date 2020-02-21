@@ -143,22 +143,83 @@ $(document).ready(function() {
             url: queryURL,
             method: "GET"
         }).then(function(response) {
-            console.log(response);
-
-            var weatherIcon = $("<img>");
-
-            weatherIcon.attr(
-                "src",
-                "http://openweathermap.org/img/w/" +
-                    response.weather[0].icon +
-                    ".png"
-            );
-
             var myDate = moment().format("dddd, MMM Do");
             var myTime = moment().format("h:mm a");
             currDate = $("<h1>").text(myDate);
             currTime = $("<h1>").text(myTime);
 
+            var wClass = "";
+            var cloudy = ["802", "803", "804"];
+            var storm = [
+                "200",
+                "201",
+                "202",
+                "210",
+                "211",
+                "212",
+                "221",
+                "230",
+                "231",
+                "232"
+            ];
+            var drizzle = [
+                "300",
+                "301",
+                "302",
+                "310",
+                "311",
+                "312",
+                "313",
+                "314",
+                "321"
+            ];
+            var rain = [
+                "500",
+                "501",
+                "502",
+                "503",
+                "504",
+                "511",
+                "520",
+                "521",
+                "522",
+                "531"
+            ];
+            var snow = [
+                "600",
+                "601",
+                "602",
+                "611",
+                "612",
+                "613",
+                "615",
+                "616",
+                "620",
+                "621",
+                "622"
+            ];
+            var atmosphere = ["701", "711", "721", "731", "741", "751", "761"];
+
+            if (response.weather[0].id === 801) {
+                wClass = "wi wi-day-cloudy";
+            } else if (response.weather[0].id === 800) {
+                wClass = "wi wi-day-sunny";
+            } else if (jQuery.inArray("response.weather[0].id", cloudy)) {
+                wClass = "wi wi-cloudy";
+            } else if (jQuery.inArray("response.weather[0].id", storm)) {
+                wClass = "wi wi-owm-230";
+            } else if (jQuery.inArray("response.weather[0].id", drizzle)) {
+                wClass = "wi wi-owm-301";
+            } else if (jQuery.inArray("response.weather[0].id", rain)) {
+                wClass = "wi wi-owm-302";
+            } else if (jQuery.inArray("response.weather[0].id", snow)) {
+                wClass = "wi wi-owm-600";
+            } else if (jQuery.inArray("response.weather[0].id", atmosphere)) {
+                wClass = "wi wi-owm-731";
+            }
+
+            var weatherIcon = $("<i>");
+            weatherIcon.addClass(wClass);
             currDate.append(weatherIcon);
         });
     }
@@ -360,32 +421,7 @@ $(document).ready(function() {
     // SONG FUNCTIONS
     //---------------------------------------------------------------------------
 
-    // Paring playlist to mood
-
-    // I. user clicks mood they get playlist linked to mood
-    // A. need music player on HTML
-    // i. next button
-    // ii. previous button
-    // B. create a function that grabs a specific playlist id and returns 10 songs
-    // i. next funtion
-    // - play next song on playlist
-    // - TO DO: how to change src of audio element
-    // - create a way to go to the next index
-    // ii.  previous function
-    // - play previous song on playlist
-    // - create a way to go to the previous index
-    //
-    // II.  When user clicks mood they should see arist and song
-    // A. Show artist
-    // i.TO DO : find where atist exsist in object "may have to do another api call"
-    // ii.
-    // iii.
-    // iv.
-    // B.
-    // i.
-    // ii.
-    // iii.
-    // iv.
+    
 
     APIKey = "ZTM0M2ZjNDAtY2Y1Ny00MjQ1LWIxYmEtMzAwY2FlNDU2ZGNj";
 
@@ -421,7 +457,7 @@ $(document).ready(function() {
     }
 
     
-
+    
       
  let player = {
         tracks: [],
@@ -440,23 +476,49 @@ $(document).ready(function() {
             songA.text(artist);
             $("#song-content").append(songA);
             
-            $("#player").append(
-                `<source src = "${this.tracks[this.currentIndex].previewURL}">`
+            $("#currentTrackSource").src = this.tracks[this.currentIndex].previewURL;
+            let htmlPlayer = document.querySelector("#player");
+            // htmlPlayer.load();
+            htmlPlayer.play();
+        
                 
-                
-            )
+            
 
-            document.querySelector("#player").play();
+            
             
         },
-       
-       
-       
-       
-       
-        init() {
+        next(){
+            this.currentIndex++;
+            if(typeof this.tracks[this.currentIndex] === 'undefined'){
+                this.currentIndex = 0;
+            }
+            this.play();
+          },
+            previous(){
+            if(this.currentIndex>0){
+                this.currentIndex--;
+            } else { 
+                this.currentIndex = this.tracks.length-1;
+            }
+            this.play();  
+              
+        },
+
+
+
+       init() {
             $("#song-content").append('<audio id="player" controls></audio>');
+            $("#player").append(
+                `<source id="currentTrackSource" src="${this.tracks[this.currentIndex].previewURL}">`
+            )
+            document.getElementById('next-button').addEventListener('click', function(){
+                player.next();
+               });
+               document.getElementById('previous-button').addEventListener('click', function(){
+                player.previous();
+               });
         }
+    
     
         
         
