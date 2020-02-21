@@ -123,6 +123,7 @@ i {
 audio {
     position: relative;
     width: 100%;
+    /* outline-color: yellowgreen; */
 }
 #previous-button {
     padding-right: 15px;

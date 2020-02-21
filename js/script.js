@@ -342,10 +342,9 @@ $(document).ready(function() {
         var $displayPhoto = $("#display-photo");
         //var $displayPhoto = $(".photo-content");
 
-
         var photoType = "";
         var photosPerPage = 80;
-        var timerTime = 10000;     // 10 second delay between photos
+        var timerTime = 10000; // 10 second delay between photos
         var nextPageOfPhotos = "";
 
         var currentPhoto = -1;
@@ -355,50 +354,58 @@ $(document).ready(function() {
         // 563492ad6f91700001000001bbb93d6089ee4731b7a0c2fa559ab484
 
         var photoTypesHappy = ["flowers", "smile", "flower", "fun", "sky"];
-        var photoTypesSad   = ["sad", "rain", "clouds", "sea", "desert"];
-        var photoTypesCalm  = ["landscape", "universe", "sunset", "nature", "mountains"];
+        var photoTypesSad = ["sad", "rain", "clouds", "sea", "desert"];
+        var photoTypesCalm = [
+            "landscape",
+            "universe",
+            "sunset",
+            "nature",
+            "mountains"
+        ];
         var photoTypesHyper = ["fire", "gym", "party", "kids"];
         var photoTypesTired = ["night", "forest", "light", "tree"];
         var photoTypesEnergetic = ["adventure", "sport", "success", "newyork"];
-        //   beach, trees, earth, 
+        //   beach, trees, earth,
 
         // set photo search parameter based on mood.
 
         switch (finalMood) {
             case "Happy":
                 //photoType = "flowers";
-                var idx = (Math.floor(Math.random() * photoTypesHappy.length));
+                var idx = Math.floor(Math.random() * photoTypesHappy.length);
                 photoType = photoTypesHappy[idx];
                 break;
             case "Sad":
                 //photoType = "sad";
-                var idx = (Math.floor(Math.random() * photoTypesSad.length));
+                var idx = Math.floor(Math.random() * photoTypesSad.length);
                 photoType = photoTypesSad[idx];
                 break;
             case "Calm":
                 //photoType = "landscape";
-                var idx = (Math.floor(Math.random() * photoTypesCalm.length));
+                var idx = Math.floor(Math.random() * photoTypesCalm.length);
                 photoType = photoTypesCalm[idx];
                 break;
             case "Hyper":
                 //photoType = "fire";
-                var idx = (Math.floor(Math.random() * photoTypesHyper.length));
+                var idx = Math.floor(Math.random() * photoTypesHyper.length);
                 photoType = photoTypesHyper[idx];
                 break;
             case "Tired":
                 //photoType = "sunset";
-                var idx = (Math.floor(Math.random() * photoTypesTired.length));
+                var idx = Math.floor(Math.random() * photoTypesTired.length);
                 photoType = photoTypesTired[idx];
                 break;
             case "Energetic":
                 //photoType = "beach";
-                var idx = (Math.floor(Math.random() * photoTypesEnergetic.length));
+                var idx = Math.floor(
+                    Math.random() * photoTypesEnergetic.length
+                );
                 photoType = photoTypesEnergetic[idx];
         }
 
         console.log("Photo type:", photoType);
 
-         // Some of the choices are:
+        // Some of the choices are:
         //  sunset, sky, mountains, sea, sad, night, light, desert, universe,
         //  forest, fire, beach, tree, trees, rain, earth, flowers, flower, clouds, smile
 
@@ -457,8 +464,8 @@ $(document).ready(function() {
                             response.photos[i].id,
                             response.photos[i].width,
                             response.photos[i].height,
-                            //response.photos[i].src.medium
-                            response.photos[i].src.landscape
+                            response.photos[i].src.landscape,
+                            response.photos[i].url
                         );
                         photoInfo.push(newPhoto);
                     }
@@ -476,24 +483,30 @@ $(document).ready(function() {
         // "https://images.pexels.com/lib/api/pexels-white.png"
         //-----------------------------------------------------------
         function displayNextPhoto() {
-            //debugger;
             currentPhoto++;
             //console.log(currentPhoto);
             //if (currentPhoto < 5) {
             if (currentPhoto < photoInfo.length) {
                 var foto = photoInfo[currentPhoto];
-                console.log(foto.photoId, "width: ", foto.photoWidth, "height: ", foto.photoHeight);
+                console.log(
+                    foto.photoId,
+                    "width: ",
+                    foto.photoWidth,
+                    "height: ",
+                    foto.photoHeight
+                );
                 // clear out the area holding the current photo so the next one will replace it
                 $displayPhoto.empty();
                 var photoSpot = $("<img>").attr("src", foto.photo);
                 $displayPhoto.append(photoSpot);
-                debugger;
-                // setup photo credit 
-                var aURL = $("<a>");
-                aURL.addClass("subtitle")
-                     .attr("href", "https://www.pexels.com/")
-                     .text(foto.fotographer);
-                 $displayPhoto.append(aURL);
+                // setup photo credit
+                var photoURL = $("<a>");
+                photoURL
+                    .addClass("subtitle")
+                    .attr("href", foto.url)
+                    .text("Photograph by: " + foto.photographer + " on Pexels");
+                $displayPhoto.append(photoURL);
+
                 // fade-in in 1.5 seconds
                 $displayPhoto.fadeIn(1500);
                 // set timer to start fade-out in 8 seconds
@@ -506,7 +519,7 @@ $(document).ready(function() {
                 }
             }
         }
- 
+
         function fadePhoto() {
             console.log("fadePhoto");
             $displayPhoto.fadeOut(1500);
@@ -522,12 +535,20 @@ $(document).ready(function() {
         //-----------------------------------------------------------
         // Constructor function for Photo objects
         //-----------------------------------------------------------
-        function Photo(fotographer, picId, picWidth, picHeight, picture) {
+        function Photo(
+            fotographer,
+            picId,
+            picWidth,
+            picHeight,
+            picture,
+            picURL
+        ) {
             this.photographer = fotographer;
             this.photoId = picId;
             this.photoWidth = picWidth;
             this.photoHeight = picHeight;
             this.photo = picture;
+            this.url = picURL;
         }
     }
 
@@ -627,6 +648,34 @@ $(document).ready(function() {
                 }">`
             );
             $("#song-content").append('<div id="current-song"></div>');
+
+            // change accessibility outline color to blend in background
+            switch (finalMood) {
+                case "Happy":
+                    $("audio");
+                    $("#player").css("outline-color", "#fac8d3");
+                    break;
+                case "Sad":
+                    $("audio");
+                    $("#player").css("outline-color", "#8093b0");
+                    break;
+                case "Calm":
+                    $("audio");
+                    $("#player").css("outline-color", "#74a384");
+                    break;
+                case "Hyper":
+                    $("audio");
+                    $("#player").css("outline-color", "#c94d4d");
+                    break;
+                case "Tired":
+                    $("audio");
+                    $("#player").css("outline-color", "#948e9c");
+                    break;
+                case "Energetic":
+                    $("audio");
+                    $("#player").css("outline-color", "#8ed164");
+                    break;
+            }
 
             var previous = $("<a>");
             previous
