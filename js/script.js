@@ -137,7 +137,7 @@ $(document).ready(function() {
         // create empty array to hold geolocation
         var my_geolocation = [];
         // get current geolocation (latitude & longitude)
-        navigator.geolocation.getCurrentPosition(success, error);
+        navigator.geolocation.getCurrentPosition(success);
     } else {
         var my_geolocation = JSON.parse(data);
         var latitude = my_geolocation[0];
@@ -162,10 +162,6 @@ $(document).ready(function() {
 
         // get current weather conditions at current geolocation
         getCurrentWeather(latitude, longitude);
-
-        function error(err) {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-        }
     }
 
     //---------------------------------------------------------------------
