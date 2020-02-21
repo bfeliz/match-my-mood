@@ -23,10 +23,40 @@ $(document).ready(function() {
         var selectedMood = $(".select option:selected")
             .text()
             .trim();
-        if (selectedMood !== "I don't know, pick for me!") {
-            finalMood = selectedMood;
+
+        if ($("input[name=question]:checked", ".control").val() === "no") {
+            if (selectedMood !== "I don't know, pick for me!") {
+                switch (selectedMood) {
+                    case "Happy":
+                        finalMood = "Sad";
+                        break;
+                    case "Sad":
+                        finalMood = "Happy";
+                        break;
+                    case "Calm":
+                        finalMood = "Hyper";
+                        break;
+                    case "Hyper":
+                        finalMood = "Calm";
+                        break;
+                    case "Tired":
+                        finalMood = "Energetic";
+                        break;
+                    case "Energetic":
+                        finalMood = "Tired";
+                        break;
+                }
+            } else {
+                finalMood =
+                    moodArray[Math.floor(Math.random() * moodArray.length)];
+            }
         } else {
-            finalMood = moodArray[Math.floor(Math.random() * moodArray.length)];
+            if (selectedMood !== "I don't know, pick for me!") {
+                finalMood = selectedMood;
+            } else {
+                finalMood =
+                    moodArray[Math.floor(Math.random() * moodArray.length)];
+            }
         }
     }
 
