@@ -137,7 +137,7 @@ $(document).ready(function() {
         // create empty array to hold geolocation
         var my_geolocation = [];
         // get current geolocation (latitude & longitude)
-        navigator.geolocation.getCurrentPosition(success, error);
+        navigator.geolocation.getCurrentPosition(success);
     } else {
         var my_geolocation = JSON.parse(data);
         var latitude = my_geolocation[0];
@@ -162,10 +162,6 @@ $(document).ready(function() {
 
         // get current weather conditions at current geolocation
         getCurrentWeather(latitude, longitude);
-
-        function error(err) {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-        }
     }
 
     //---------------------------------------------------------------------
@@ -190,7 +186,7 @@ $(document).ready(function() {
             method: "GET"
         }).then(function(response) {
             // get date and time
-            var myDate = moment().format("dddd, MMM Do");
+            var myDate = moment().format("dddd, MMMM Do");
             var myTime = moment().format("h:mm a");
             currDate = $("<h1>").text(myDate);
             currTime = $("<h1>").text(myTime);
@@ -539,8 +535,6 @@ $(document).ready(function() {
     // SONG FUNCTIONS
     //---------------------------------------------------------------------------
 
-    //APIKey = "ZTM0M2ZjNDAtY2Y1Ny00MjQ1LWIxYmEtMzAwY2FlNDU2ZGNj";
-
     var playlists = {
         energetic: "pp.243995364",
         tired: "pp.201748658",
@@ -579,13 +573,20 @@ $(document).ready(function() {
         play() {
             let songTitle = this.tracks[this.currentIndex].name;
             let artist = this.tracks[this.currentIndex].artistName;
-            console.log(songTitle);
-            console.log(artist);
 
-            let songHtml = `<p class="song-title">${songTitle}</p>`;
-            songHtml += `<p class="artist-name">${artist}</p>`;
+            var newSongTitle = "";
 
-            $("#current-song").html(songHtml);
+            if (songTitle.length > 50) {
+                newSongTitle = songTitle.substring(0, 50) + "...";
+            } else {
+                newSongTitle = songTitle;
+            }
+
+            let songHtml = `<p class="song-title">${"Song: " +
+                newSongTitle}</p>`;
+            songHtml += `<p class="artist-name">${"By: " + artist}</p>`;
+
+            $(".content").html(songHtml);
 
             // htmlPlayer.load();
             this.htmlPlayer.play();
@@ -627,16 +628,30 @@ $(document).ready(function() {
             );
             $("#song-content").append('<div id="current-song"></div>');
 
-            document
-                .getElementById("next-button")
-                .addEventListener("click", function() {
-                    player.next();
-                });
-            document
-                .getElementById("previous-button")
-                .addEventListener("click", function() {
-                    player.previous();
-                });
+            var previous = $("<a>");
+            previous
+                .addClass("previous-button")
+                .attr("href", "#")
+                .text("Previous")
+                .css({ color: "white", "padding-right": "40px" });
+            $("#song-content").append(previous);
+
+            $(".previous-button").on("click", function(event) {
+                event.preventDefault();
+                player.previous();
+            });
+
+            var next = $("<a>");
+            next.addClass("next-button")
+                .attr("href", "#")
+                .text("Next")
+                .css("color", "white");
+            $("#song-content").append(next);
+
+            $(".next-button").on("click", function(event) {
+                event.preventDefault();
+                player.next();
+            });
         }
     };
 
@@ -691,9 +706,9 @@ $(document).ready(function() {
 
                 var newAbstract = "";
 
-                if (randomArticle.abstract.length > 420) {
+                if (randomArticle.abstract.length > 250) {
                     newAbstract =
-                        randomArticle.abstract.substring(0, 420) + "...";
+                        randomArticle.abstract.substring(0, 250) + "...";
                 } else {
                     newAbstract = randomArticle.abstract;
                 }
