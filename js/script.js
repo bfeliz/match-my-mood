@@ -37,31 +37,49 @@ $(document).ready(function() {
                 $("html")
                     .removeClass()
                     .addClass("bg-ha");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-ha");
                 break;
             case "Sad":
                 $("html")
                     .removeClass()
                     .addClass("bg-sa");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-sa");
                 break;
             case "Calm":
                 $("html")
                     .removeClass()
                     .addClass("bg-ca");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-ca");
                 break;
             case "Hyper":
                 $("html")
                     .removeClass()
                     .addClass("bg-hy");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-hy");
                 break;
             case "Tired":
                 $("html")
                     .removeClass()
                     .addClass("bg-ti");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-ti");
                 break;
             case "Energetic":
                 $("html")
                     .removeClass()
                     .addClass("bg-en");
+                $(".card")
+                    .removeClass()
+                    .addClass("card-en");
         }
     }
 
@@ -143,11 +161,13 @@ $(document).ready(function() {
             url: queryURL,
             method: "GET"
         }).then(function(response) {
+            // get date and time
             var myDate = moment().format("dddd, MMM Do");
             var myTime = moment().format("h:mm a");
             currDate = $("<h1>").text(myDate);
             currTime = $("<h1>").text(myTime);
 
+            // get weather icon
             var wClass = "";
             var cloudy = ["802", "803", "804"];
             var storm = [
@@ -218,12 +238,14 @@ $(document).ready(function() {
                 wClass = "wi wi-owm-731";
             }
 
+            // append weather icon to date
             var weatherIcon = $("<i>");
             weatherIcon.addClass(wClass);
             currDate.append(weatherIcon);
         });
     }
 
+    // append time to DOM
     function appendTime() {
         $displayWeather.append(currDate);
         $displayWeather.append(currTime);
@@ -322,7 +344,7 @@ $(document).ready(function() {
                 photoType = "sunset";
                 break;
             case "Energetic":
-                photoType = "sky";
+                photoType = "beach";
         }
 
         // TESTING: override photoType
@@ -474,52 +496,34 @@ $(document).ready(function() {
             method: "GET"
         }).then(function(response) {
             player.tracks = response.tracks;
-            console.log(response.tracks)
             player.init();
             player.play();
         });
-
     }
 
-    
-
-      
- let player = {
+    let player = {
         tracks: [],
         currentIndex: Math.floor(Math.random() * 10),
-        
+
+        init() {
+            $("#audio-spot").append('<audio id="player" controls></audio>');
+        },
         play() {
             let songTitle = this.tracks[this.currentIndex].name;
             let artist = this.tracks[this.currentIndex].artistName;
-            console.log(songTitle)
-            console.log(artist)
             var songT = $("<p>");
-            songT.text(songTitle);
-            $("#song-content").append(songT);
+            songT.text("Title: " + songTitle);
+            $("#song-info").append(songT);
 
             var songA = $("<p>");
-            songA.text(artist);
-            $("#song-content").append(songA);
-            
+            songA.text("Artist: " + artist);
+            $("#song-info").append(songA);
+
             $("#player").append(
                 `<source src = "${this.tracks[this.currentIndex].previewURL}">`
-                
-                
-            )
+            );
 
-            document.querySelector("#player").play();
-            
-        },
-       
-       
-       
-       
-       
-        init() {
-            $("#song-content").append('<audio id="player" controls></audio>');
+            // document.querySelector("#player").play();
         }
-    
-        
-        
     };
 });
