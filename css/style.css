@@ -109,16 +109,74 @@ i {
     font-size: 2.5vmin;
     color: white;
 }
-#song-content {
-    font-size: 3.5vmin;
-    font-weight: bold;
+.content {
+    font-size: 2.5vmin;
     color: white;
+}
+#song-content {
+    text-align: center;
+    font-size: 2.5vmin;
+}
+.song-title {
+    font-size: 3.5vmin;
 }
 audio {
     position: relative;
-    top: 100px;
     width: 100%;
+}
+#previous-button {
+    padding-right: 15px;
 }
 #last-card {
     margin-bottom: 15%;
+}
+@media screen and (max-width: 1240px) {
+    .title {
+        font-size: 3.25vmin;
+    }
+    .subtitle {
+        font-size: 2.25vmin;
+    }
+    #song-content {
+        font-size: 2.25vmin;
+    }
+    .song-title {
+        font-size: 3.25vmin;
+    }
+}
+@media screen and (max-width: 1030px) {
+    #song-content {
+        font-size: 2vmin;
+    }
+    .song-title {
+        font-size: 3vmin;
+    }
+}
+@media screen and (max-width: 845px) {
+    .title {
+        font-size: 2.75vmin;
+    }
+    .subtitle {
+        font-size: 2.25vmin;
+    }
+    #song-content {
+        font-size: 1.75vmin;
+    }
+    .song-title {
+        font-size: 2.75vmin;
+    }
+}
+@media screen and (max-width: 768px) {
+    .title {
+        font-size: 3.5vmin;
+    }
+    .subtitle {
+        font-size: 2.5vmin;
+    }
+    #song-content {
+        font-size: 2.5vmin;
+    }
+    .song-title {
+        font-size: 3.5vmin;
+    }
 }
