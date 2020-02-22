@@ -54,6 +54,54 @@ $(document).ready(function() {
                 finalMood =
                     moodArray[Math.floor(Math.random() * moodArray.length)];
             }
+        } else if (
+            $("input[name=question]:checked", ".control").val() ===
+            "weather-yes"
+        ) {
+            switch (wClass) {
+                case "wi wi-day-cloudy":
+                    finalMood = "Calm";
+                    break;
+                case "wi wi-day-sunny":
+                    finalMood = "Happy";
+                    break;
+                case "wi wi-cloudy":
+                    finalMood = "Tired";
+                    break;
+                case "wi wi-thunderstorm":
+                    finalMood = "Tired";
+                    break;
+                case "wi wi-showers":
+                    finalMood = "Calm";
+                    break;
+                case "wi wi-rain":
+                    finalMood = "Calm";
+                    break;
+                case "wi wi-snow":
+                    finalMood = "Sad";
+                    break;
+                case "wi wi-sandstorm":
+                    finalMood = "Hyper";
+                    break;
+            }
+        } else if (
+            $("input[name=question]:checked", ".control").val() === "time-yes"
+        ) {
+            if (moment().format("H") >= 22 && moment().format("H") < 7) {
+                finalMood = "Tired";
+            } else if (moment().format("H") >= 7 && moment().format("H") < 12) {
+                finalMood = "Energetic";
+            } else if (
+                moment().format("H") >= 12 &&
+                moment().format("H") < 17
+            ) {
+                finalMood = "Happy";
+            } else if (
+                moment().format("H") >= 17 &&
+                moment().format("H") < 22
+            ) {
+                finalMood = "Calm";
+            }
         } else {
             if (selectedMood !== "I don't know, pick for me!") {
                 finalMood = selectedMood;
@@ -134,7 +182,8 @@ $(document).ready(function() {
         var modalLink = $("<a>");
         modalLink
             .addClass("subtitle")
-            .text("Don't like this mood? Pick another here!");
+            .text("Current Mood: " + finalMood)
+            .append("<br />" + "Don't like this mood? Pick another here!");
         $("#bottom-link").append(modalLink);
     }
 
