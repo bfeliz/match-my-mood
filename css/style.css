@@ -12,6 +12,8 @@ html {
     min-height: 100%;
 }
 body {
+    font-family: "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans",
+        "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 0% 10%;
 }
 .bg-ha {
@@ -123,12 +125,17 @@ i {
 audio {
     position: relative;
     width: 100%;
+    /* outline-color: yellowgreen; */
 }
 #previous-button {
     padding-right: 15px;
 }
+#bottom-link {
+    text-align: center;
+    margin-bottom: 3%;
+}
 #last-card {
-    margin-bottom: 15%;
+    margin-bottom: 6%;
 }
 @media screen and (max-width: 1240px) {
     .title {

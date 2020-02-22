@@ -9,11 +9,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <link rel="stylesheet" href="https://unpkg.com/bulma-modal-fx/dist/css/modal-fx.min.css" />
     <link rel="stylesheet" href="css/weather-icons.min.css">
-    <!-- <link rel="stylesheet" href="font/weathericons-regular-webfont.eot"> -->
-    <!-- <link rel="stylesheet" href="font/weathericons-regular-webfont.svg"> -->
-    <!-- <link rel="stylesheet" href="font/weathericons-regular-webfont.ttf"> -->
-    <!-- <link rel="stylesheet" href="font/weathericons-regular-webfont.woff"> -->
-    <!-- <link rel="stylesheet" href="font/weathericons-regular-webfont.woff2"> -->
     <link rel="stylesheet" href="css/style.css" />
 
 </head>
@@ -34,22 +29,22 @@
                 </div>
             </div>
             <br> <br> <br>
-            <!-- photo div -->
-            <div class="card photo-card is-hidden">
-                <div class="card-content photo-content">
-                    <div id="display-photo">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- song div -->
-        <div class="column">
+            <!-- song div -->
             <div class="card song-card is-hidden">
                 <div class="card-content song-content">
                     <div id="song-content"></div>
                     <br>
                     <div class="content"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <!-- photo div -->
+            <div class="card photo-card is-hidden">
+                <div class="card-content photo-content">
+                    <div id="display-photo">
+                    </div>
                 </div>
             </div>
             <br> <br> <br>
@@ -60,6 +55,8 @@
             </div>
         </div>
     </div>
+
+    <div id="bottom-link"></div>
 
     <!-- modal that launches on startup -->
     <div class="modal modal-fx-3dSignDown is-active">
@@ -88,7 +85,14 @@
                     </label>
                     <label class="radio has-text-link is-size-5">
                         <input type="radio" name="question" value="no">
-                        Do the opposite of my mood
+                        Show the opposite of my mood
+                    </label>
+                    <label class="radio has-text-link is-size-5">
+                        <input type="radio" name="question" value="weather-yes">
+                        Match my mood to the weather
+                    </label><label class="radio has-text-link is-size-5">
+                        <input type="radio" name="question" value="time-yes">
+                        Match my mood to the time
                     </label>
                 </div>
             </div>
