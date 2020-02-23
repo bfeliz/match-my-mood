@@ -210,7 +210,7 @@ $(document).ready(function() {
     });
 
     //--------------------------------------------------------------------------
-    // WEATHER AND TIME FUNCTIONS
+    // WEATHER AND TIME FUNCTIONS - OpenWeatherMap API
     //---------------------------------------------------------------------------
     var currDate = "";
     var currTime = "";
@@ -382,7 +382,7 @@ $(document).ready(function() {
     }
 
     //--------------------------------------------------------------------------
-    // QUOTE FUNCTIONS
+    // QUOTE FUNCTIONS FavQs API v2
     //---------------------------------------------------------------------------
 
     // quote section variables
@@ -440,7 +440,7 @@ $(document).ready(function() {
     }
 
     //--------------------------------------------------------------------------
-    // PHOTO FUNCTIONS
+    // PHOTO FUNCTIONS - Pexels API
     //---------------------------------------------------------------------------
 
     function getPhotos() {
@@ -644,7 +644,7 @@ $(document).ready(function() {
     }
 
     //--------------------------------------------------------------------------
-    // SONG FUNCTIONS
+    // SONG FUNCTIONS - Napster API
     //---------------------------------------------------------------------------
 
     var playlists = {
@@ -810,7 +810,7 @@ $(document).ready(function() {
     };
 
     //--------------------------------------------------------------------------
-    // ARTICLE FUNCTIONS
+    // ARTICLE FUNCTIONS - New York Times API
     //---------------------------------------------------------------------------
 
     function getArticle() {
