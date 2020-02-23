@@ -137,20 +137,6 @@ audio {
 #last-card {
     margin-bottom: 6%;
 }
-@media screen and (max-width: 1240px) {
-    .title {
-        font-size: 3.25vmin;
-    }
-    .subtitle {
-        font-size: 2.25vmin;
-    }
-    #song-content {
-        font-size: 2.25vmin;
-    }
-    .song-title {
-        font-size: 3.25vmin;
-    }
-}
 @media screen and (max-width: 1030px) {
     #song-content {
         font-size: 2vmin;
@@ -185,5 +171,19 @@ audio {
     }
     .song-title {
         font-size: 3.5vmin;
+    }
+}
+@media screen and (max-width: 430px) {
+    .title {
+        font-size: 5vmin;
+    }
+    .subtitle {
+        font-size: 4.5vmin;
+    }
+    #song-content {
+        font-size: 4.5vmin;
+    }
+    .song-title {
+        font-size: 5vmin;
     }
 }
