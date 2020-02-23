@@ -858,8 +858,8 @@ $(document).ready(function() {
             var newAbstract = "";
 
             // shorten abstract length to fit in display card
-            if (randomArticle.abstract.length > 250) {
-                newAbstract = randomArticle.abstract.substring(0, 250) + "...";
+            if (randomArticle.abstract.length > 175) {
+                newAbstract = randomArticle.abstract.substring(0, 175) + "...";
             } else {
                 newAbstract = randomArticle.abstract;
             }
