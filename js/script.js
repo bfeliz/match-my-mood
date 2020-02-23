@@ -87,7 +87,7 @@ $(document).ready(function() {
         } else if (
             $("input[name=question]:checked", ".control").val() === "time-yes"
         ) {
-            if (moment().format("H") >= 22 && moment().format("H") < 7) {
+            if (moment().format("H") >= 0 && moment().format("H") < 7) {
                 finalMood = "Tired";
             } else if (moment().format("H") >= 7 && moment().format("H") < 12) {
                 finalMood = "Energetic";
@@ -98,9 +98,14 @@ $(document).ready(function() {
                 finalMood = "Happy";
             } else if (
                 moment().format("H") >= 17 &&
-                moment().format("H") < 22
+                moment().format("H") < 21
             ) {
                 finalMood = "Calm";
+            } else if (
+                moment().format("H") >= 21 &&
+                moment().format("H") < 24
+            ) {
+                finalMood = "Tired";
             }
         } else {
             if (selectedMood !== "I don't know, pick for me!") {
@@ -283,11 +288,16 @@ $(document).ready(function() {
             currTime = $("<h1>").text(myTime);
 
             // set weather icon
-            if (response.weather[0].id === 801) {
+            if (response.weather[0].icon === "02d") {
                 wClass = "wi wi-day-cloudy";
-            } else if (response.weather[0].id === 800) {
+            } else if (response.weather[0].icon === "02n") {
+                wClass = "wi wi-night-alt-cloudy";
+            } else if (response.weather[0].icon === "01d") {
                 wClass = "wi wi-day-sunny";
+            } else if (response.weather[0].icon === "01n") {
+                wClass = "wi wi-night-clear";
             } else if (
+                response.weather[0].id === 801 ||
                 response.weather[0].id === 802 ||
                 response.weather[0].id === 803 ||
                 response.weather[0].id === 804
@@ -315,11 +325,12 @@ $(document).ready(function() {
                 response.weather[0].id === 312 ||
                 response.weather[0].id === 313 ||
                 response.weather[0].id === 314 ||
-                response.weather[0].id === 321
+                response.weather[0].id === 321 ||
+                response.weather[0].id === 500 ||
+                response.weather[0].id === 701
             ) {
                 wClass = "wi wi-showers";
             } else if (
-                response.weather[0].id === 500 ||
                 response.weather[0].id === 501 ||
                 response.weather[0].id === 502 ||
                 response.weather[0].id === 503 ||
@@ -346,13 +357,13 @@ $(document).ready(function() {
             ) {
                 wClass = "wi wi-snow";
             } else if (
-                response.weather[0].id === 701 ||
                 response.weather[0].id === 711 ||
                 response.weather[0].id === 721 ||
                 response.weather[0].id === 731 ||
                 response.weather[0].id === 741 ||
                 response.weather[0].id === 751 ||
-                response.weather[0].id === 761
+                response.weather[0].id === 761 ||
+                response.weather[0].id === 762
             ) {
                 wClass = "wi wi-sandstorm";
             }
