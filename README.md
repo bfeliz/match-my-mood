@@ -18,6 +18,10 @@ Pexel <br>
 Napster <br>
 New York Times
 
+The following image shows a glimpse of the application:
+
+![match my mood](assets/images/match-mood.png)
+
 ## Link to GitHub repository:
 
 https://github.com/bfeliz/match-my-mood
