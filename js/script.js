@@ -7,12 +7,23 @@ $(document).ready(function() {
     var finalMood = "";
     var moodArray = ["Happy", "Sad", "Calm", "Hyper", "Tired", "Energetic"];
     var wClass = "";
+
+    // refresh time
+    setInterval(function() {
+        getTime();
+    }, 30 * 1000);
+
+    // refresh weather
+    setInterval(function() {
+        getCurrentWeather();
+    }, 60 * 1000 * 60);
+
     // remove the modal on click of launch button
     $(".launch-btn").on("click", function(event) {
         event.preventDefault();
         $(".modal").removeClass("is-active");
         $(".card").removeClass("is-hidden");
-        appendTime();
+        getTime();
         getMood();
         setColor();
         getQuote();
@@ -206,7 +217,6 @@ $(document).ready(function() {
         $(".modal").removeClass("is-hidden");
         $(".card").addClass("is-hidden");
         $(".modal").addClass("is-active");
-        $("h1").remove();
         $("i").remove();
         $("p").remove();
         $("img").remove();
@@ -218,11 +228,6 @@ $(document).ready(function() {
     //--------------------------------------------------------------------------
     // WEATHER AND TIME FUNCTIONS - OpenWeatherMap API
     //---------------------------------------------------------------------------
-    var currDate = "";
-    var currTime = "";
-
-    // Capture selector for HTML area to hold current weather data
-    var $displayWeather = $("#display-weather");
 
     // This is my (JimG) weather API key.
     var weatherAPIKey = "7514abfe02ab6db7877685958ec119d7";
@@ -287,11 +292,6 @@ $(document).ready(function() {
             method: "GET"
         }).then(function(response) {
             console.log(response);
-            // get date and time
-            var myDate = moment().format("dddd, MMMM Do");
-            var myTime = moment().format("h:mm a");
-            currDate = $("<h1>").text(myDate);
-            currTime = $("<h1>").text(myTime);
 
             // set weather icon
             if (response.weather[0].icon === "02d") {
@@ -373,18 +373,26 @@ $(document).ready(function() {
             ) {
                 wClass = "wi wi-sandstorm";
             }
-            // append weather icon to date
-            var weatherIcon = $("<i>");
-            weatherIcon.removeClass();
-            weatherIcon.addClass(wClass);
-            currDate.append(weatherIcon);
         });
     }
 
-    // append time to DOM
-    function appendTime() {
-        $displayWeather.append(currDate);
-        $displayWeather.append(currTime);
+    // set time
+    function getTime() {
+        var myDate = moment().format("dddd, MMMM Do");
+        var myTime = moment().format("h:mm a");
+        $(".curr-date")
+            .text(myDate)
+            .addClass("date");
+        $(".curr-time").text(myTime);
+        weatherIcon();
+    }
+
+    // set weather icon
+    function weatherIcon() {
+        var weatherIcon = $("<i>");
+        weatherIcon.removeClass();
+        weatherIcon.addClass(wClass);
+        $(".date").append(weatherIcon);
     }
 
     //--------------------------------------------------------------------------
