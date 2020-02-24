@@ -83,6 +83,12 @@ $(document).ready(function() {
                 case "wi wi-sandstorm":
                     finalMood = "Hyper";
                     break;
+                case "wi wi-night-alt-cloudy":
+                    finalMood = "Tired";
+                    break;
+                case "wi wi-night-clear":
+                    finalMood = "Tired";
+                    break;
             }
         } else if (
             $("input[name=question]:checked", ".control").val() === "time-yes"
